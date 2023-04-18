@@ -1,0 +1,7 @@
+/* Chat window styles */
+.main-window {
+  display: flex;
+  flex-direction: row;
+  border-radius: 12px;
+  height: 100vh;
+}

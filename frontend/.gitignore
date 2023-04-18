@@ -1,0 +1,25 @@
+# .gitignore for React App
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Build
+build/
+dist/
+*.env
+
+# Dependency caching
+.pnp/
+.pnp.js
+
+# Optional npm cache directory
+.npm
+
+# Jest
+coverage/
+
+# Debugging with VSCode
+.vscode/

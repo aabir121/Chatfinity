@@ -1,0 +1,100 @@
+# .gitignore for .NET Core App
+
+# Binaries
+*.dll
+*.exe
+*.pdb
+*.dll.config
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+[Xx]64/
+[Xx]86/
+[Bb]uild/
+bld/
+[Oo]bj/
+[Ll]og/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Visual Studio 2015/2017/2019 cache/options directory
+.vs/
+# Uncomment if using VSCode
+# .vscode/
+
+# Test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NPM
+**/node_modules/
+**/npm-debug.log
+**/yarn-debug.log
+**/yarn-error.log
+**/package-lock.json
+**/yarn.lock
+
+# Gradle
+**/build/
+**/bin/
+**/out/
+
+# Resharper
+_ReSharper*/
+
+# Rider
+.idea/
+*.sln.iml
+*.ipr
+*.iws
+*.iml
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Build results of an ATL Project
+[Dd]ebugPS/
+[Rr]eleasePS/
+dlldata.c
+
+# Roslyn cache directories
+*.ide/
+*.RoslynCA
+
+# Unity generated folders
+[Ll]ibrary/
+[Ll]ocal[Cc]ache/
+[Ss]treamingAssets/
+[Tt]emp/
+
+# Unity executables
+[Ll]evels/[Aa]dditive/[Ss]cene*.unity
+[Ll]evels/[Aa]dditive/[Ss]cene*.unity.meta
+[Ll]evels/[Aa]dditive/[Ss]cene*.unity.orig
+[Ll]evels/[Aa]dditive/[Ss]cene*.unity.backup
+[Ll]evels/[Aa]dditive/[Ss]cene*.unity.backup.meta
+
+# Rider generated
+[Rr]ider[Oo]ut/
+
+# build generated
+/build/
+
+# .NET Core Scaffolding
+Generated_Files/
+
+# Telerik UI for Blazor generated
+_client/
+
+# Blazor WebAssembly
+bin/
+obj/
