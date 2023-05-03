@@ -1,7 +1,7 @@
 import * as signalR from "@microsoft/signalr";
 import SignalRFunctionNames from "./SignalRFunctionNames";
 
-class ChatService {
+class _ChatService {
     connection = null;
     onReceiveMessage = null;
     onAnnounceUser = null;
@@ -10,9 +10,9 @@ class ChatService {
     onGetAllUsers = null;
     onTypingStatus = null;
 
-    initialize = () => {
+    initialize = (userName) => {
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl("http://localhost:5095/chatHub")
+            .withUrl("http://localhost:5095/chatHub?user="+userName)
             .withAutomaticReconnect()
             .build();
 
@@ -33,7 +33,7 @@ class ChatService {
         });
     }
 
-    start = () => {
+    start = (userName) => {
         if (this.connection) {
             this.connection.start()
                 .then(() => {
@@ -44,7 +44,8 @@ class ChatService {
                     console.log("SignalR Failed", err);
                 });
         } else {
-            this.initialize();
+            this.initialize(userName);
+            this.start(userName);
         }
     }
 
@@ -103,4 +104,5 @@ class ChatService {
     }
 }
 
-export default new ChatService();
+const ChatService = new _ChatService();
+export default ChatService;

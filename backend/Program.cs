@@ -1,8 +1,15 @@
 using backend.Hubs;
+using backend.Models;
+using backend.Services;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.Configure<MongoDbConfig>(builder.Configuration.GetSection(nameof(MongoDbConfig)));
+builder.Services.AddSingleton<IMongoDbConfig>(provider =>
+    provider.GetRequiredService<IOptions<MongoDbConfig>>().Value);
+builder.Services.AddSingleton<UserService>();
 
 builder.Services.AddCors();
 builder.Services.AddControllers();
@@ -10,10 +17,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
-
 var app = builder.Build();
 
-app.UseCors(builder => 
+app.UseCors(builder =>
     builder.AllowAnyHeader()
         .WithOrigins("http://localhost:3000")
         .AllowAnyMethod()

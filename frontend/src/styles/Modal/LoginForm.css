@@ -1,0 +1,88 @@
+/* Login Form Container */
+.login-form-container {
+    max-width: 400px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+/* Login Form */
+.login-form {
+    background-color: #f9f9f9;
+    padding: 40px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: slideup 0.5s ease;
+}
+
+.login-form-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form h2 {
+    margin-bottom: 20px;
+}
+
+.login-form input {
+    margin: 10px 0px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.login-form input:focus {
+    border-bottom-color: #007bff;
+}
+
+.login-form button[type="submit"] {
+    margin: 20px 0 0 0;
+    padding: 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.login-form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.signup-link {
+    font-size: 14px;
+    color: #999;
+    text-align: center;
+}
+
+.signup-link p {
+    margin-bottom: 5px;
+}
+
+.signup-link span {
+    color: #007bff;
+    cursor: pointer;
+}
+
+.signup-link span:hover {
+    text-decoration: underline;
+}
+
+@keyframes slideup {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}

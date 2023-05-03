@@ -1,0 +1,19 @@
+.modal-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+}
+
+/* Modal Content */
+.modal-content {
+    max-width: 400px;
+    width: 90%;
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    background: transparent;
+}

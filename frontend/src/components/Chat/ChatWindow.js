@@ -3,15 +3,23 @@ import ChatInput from "./ChatInput";
 import ChatMessage from "./ChatMessage";
 import ChatService from "../../services/ChatService";
 import ChatUserList from "./ChatUserList";
+import LogInWindow from "../Modal/LogInWindow";
 import "../../styles/Chat/ChatWindow.css";
+import "../../styles/Modal/Modal.css";
 
 function ChatWindow() {
     const [allMessage, setAllMessage] = useState([]);
     const [user, setUser] = useState('');
     const [allUsers, setAllUsers] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
+
+    const openModal = () => {
+        setIsOpen(true);
+    };
+
 
     useEffect(()=>{
-        ChatService.start();
+        openModal();
 
         return () => {
             ChatService.stop();
@@ -20,10 +28,11 @@ function ChatWindow() {
 
     useEffect(() => {
         ChatService.setOnConnectedHandler(() => {
-            ensureUserName();
+            // ensureUserName();
+            ChatService.announceUser(user, true);
             ChatService.getAllUsers();
         });
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         ChatService.setReceiveMessageHandler((user, msg) => {
@@ -99,7 +108,6 @@ function ChatWindow() {
             ensureUserName();
         } else {
             setUser(userName);
-            ChatService.announceUser(userName, true);
         }
     }
 
@@ -107,8 +115,15 @@ function ChatWindow() {
         ChatService.sendTypingStatus(user, isTyping);
     }
 
+    const onLoginSuccess = (userData) => {
+        setUser(userData.userName);
+        setIsOpen(false);
+        ChatService.start(userData.userName);
+    };
+
     return (
         <div className="main-window">
+            <LogInWindow isOpen={isOpen} onLoginSuccess={onLoginSuccess}></LogInWindow>
             <ChatUserList allUsers={allUsers}></ChatUserList>
             <div className="chat-window">
                 <div className="chat-messages">
