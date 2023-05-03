@@ -91,10 +91,6 @@ class _ChatService {
         this.invoke(SignalRFunctionNames.GET_ALL_USERS);
     }
 
-    announceUser = (user, joined) => {
-        this.invoke(SignalRFunctionNames.ANNOUNCE_USER, null, user, joined);
-    };
-
     sendMessage = (user, message) => {
         this.invoke(SignalRFunctionNames.SEND_MESSAGE, this.onSendMessage, user, message);
     }

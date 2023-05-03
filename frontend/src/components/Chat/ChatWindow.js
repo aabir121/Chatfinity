@@ -28,8 +28,6 @@ function ChatWindow() {
 
     useEffect(() => {
         ChatService.setOnConnectedHandler(() => {
-            // ensureUserName();
-            ChatService.announceUser(user, true);
             ChatService.getAllUsers();
         });
     }, [user]);
@@ -99,16 +97,6 @@ function ChatWindow() {
 
     const sendMessage = (msg) => {
         ChatService.sendMessage(user, msg);
-    }
-
-    const ensureUserName = () => {
-        const userName = prompt("Enter your name");
-        if (!userName) {
-            alert("Username is mandatory");
-            ensureUserName();
-        } else {
-            setUser(userName);
-        }
     }
 
     const setTypingStatus = (isTyping) => {

@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using backend.Models;
 using Microsoft.AspNetCore.SignalR;
 
@@ -5,11 +6,16 @@ namespace backend.Hubs;
 
 public class ChatHub : Hub<IChatClient>
 {
-    public override Task OnConnectedAsync()
+    private static readonly ConcurrentDictionary<string, MessageUser> ConnectionMap = new();
+
+    public override async Task OnConnectedAsync()
     {
-        // do something
         var userName = Context.GetHttpContext()?.Request.Query["user"];
-        return base.OnConnectedAsync();
+        var messageUser = new MessageUser(Context.ConnectionId, userName, DateTime.Now);
+        ConnectionMap[Context.ConnectionId] = messageUser;
+        
+        await base.OnConnectedAsync();
+        await this.AnnounceUser(messageUser, true);
     }
 
     public async Task SendMessage(string user, string message)
@@ -17,25 +23,18 @@ public class ChatHub : Hub<IChatClient>
         await Clients.Others.ReceiveMessage(user, message);
     }
 
-    public async Task AnnounceUser(string user, bool joined)
+    public async Task AnnounceUser(MessageUser user, bool joined)
     {
-        var currentUser = new MessageUser(Context.ConnectionId, user, DateTime.Now);
-        if (joined)
-        {
-            ClientList.AllUsers.Add(currentUser);
-        }
-        else
-        {
-            currentUser = ClientList.AllUsers.FirstOrDefault(u => u.userName == user);
-            ClientList.AllUsers.Remove(currentUser);
-        }
-
-        await Clients.Others.AnnounceUser(currentUser, joined);
+        await Clients.Others.AnnounceUser(user, joined);
     }
 
     public async Task GetAllUsers()
     {
-        var otherUsers = ClientList.AllUsers.Where(u => u.connectionId != Context.ConnectionId).ToList();
+        var otherUsers = ConnectionMap
+            .Where(pair => pair.Key != Context.ConnectionId)
+            .Select(pair => pair.Value)
+            .ToList();
+        
         await Clients.Caller.GetAllUsers(otherUsers);
     }
 
@@ -46,8 +45,12 @@ public class ChatHub : Hub<IChatClient>
 
     public override async Task OnDisconnectedAsync(Exception exception)
     {
-        var user = ClientList.AllUsers.FirstOrDefault(u => u.connectionId == Context.ConnectionId);
-        if (user != null) await AnnounceUser(user.userName, false);
+        MessageUser removed;
+
+        if (ConnectionMap.TryRemove(Context.ConnectionId, out removed))
+        {
+            await AnnounceUser(removed, false);
+        }
 
         await base.OnDisconnectedAsync(exception);
     }
