@@ -6,10 +6,11 @@ import ChatUserList from "./ChatUserList";
 import LogInWindow from "../Modal/LogInWindow";
 import "../../styles/Chat/ChatWindow.css";
 import "../../styles/Modal/Modal.css";
+import {MessageDataService} from "../../services/MessageDataService";
 
 function ChatWindow() {
     const [allMessage, setAllMessage] = useState([]);
-    const [user, setUser] = useState('');
+    const [userName, setUserName] = useState('');
     const [allUsers, setAllUsers] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -17,22 +18,43 @@ function ChatWindow() {
         setIsOpen(true);
     };
 
+    const sendMessage = (msg) => {
+        ChatService.sendMessage(userName, msg);
+    }
+
+    const setTypingStatus = (isTyping) => {
+        ChatService.sendTypingStatus(userName, isTyping);
+    }
+
+    const onLoginSuccess = (userData) => {
+        const currName = userData.userName;
+        setUserName(currName);
+        setIsOpen(false);
+        ChatService.start(currName);
+        ChatService.setOnConnectedHandler(() => {
+            ChatService.getAllUsers();
+            MessageDataService.getAllMessage()
+                .then((data)=>{
+                    const messages = [];
+                    data.forEach(d=>{
+                        messages.push({
+                            user: d.from,
+                            msg: d.content,
+                            type: d.from === currName ? 'send' : 'receive',
+                            ts: d.sentAt
+                        });
+                        setAllMessage(prevState => messages);
+                    });
+                })
+        });
+        ChatService.setOnGetAllUsersHandler((users) => {
+            users = users.filter(u=>u.userName !== currName);
+            setAllUsers(users);
+        });
+    };
 
     useEffect(()=>{
         openModal();
-
-        return () => {
-            ChatService.stop();
-        };
-    }, []);
-
-    useEffect(() => {
-        ChatService.setOnConnectedHandler(() => {
-            ChatService.getAllUsers();
-        });
-    }, [user]);
-
-    useEffect(() => {
         ChatService.setReceiveMessageHandler((user, msg) => {
             setAllMessage((prevMsg) => [...prevMsg, {
                 user,
@@ -41,6 +63,25 @@ function ChatWindow() {
                 ts: new Date().toISOString()
             }]);
         });
+        ChatService.setSendMessageHandler((user, msg) => {
+            MessageDataService.createMessage({
+                from: user,
+                to: 'all',
+                content: msg,
+            })
+                .then((data)=>{
+                    setAllMessage((prevMsg) => [...prevMsg, {
+                        user: data.from,
+                        msg: data.content,
+                        type: "send",
+                        ts: data.sentAt
+                    }]);
+                });
+
+        });
+        return () => {
+            ChatService.stop();
+        };
     }, []);
 
     useEffect(() => {
@@ -61,24 +102,6 @@ function ChatWindow() {
     }, [allUsers]);
 
     useEffect(() => {
-        ChatService.setSendMessageHandler((user, msg) => {
-            setAllMessage((prevMsg) => [...prevMsg, {
-                user,
-                msg,
-                type: "send",
-                ts: new Date().toISOString()
-            }]);
-        });
-    }, []);
-
-    useEffect(() => {
-        ChatService.setOnGetAllUsersHandler((users) => {
-            users = users.filter(u=>u.userName !== user);
-            setAllUsers(users);
-        });
-    }, [user]);
-
-    useEffect(() => {
         ChatService.setOnTypingStatusHandler((user, isTyping)=>{
             const hasTyping = allMessage.some(m=>m.user === user && m.type === "typing");
             if (isTyping && !hasTyping) {
@@ -94,20 +117,6 @@ function ChatWindow() {
             }
         });
     }, [allMessage]);
-
-    const sendMessage = (msg) => {
-        ChatService.sendMessage(user, msg);
-    }
-
-    const setTypingStatus = (isTyping) => {
-        ChatService.sendTypingStatus(user, isTyping);
-    }
-
-    const onLoginSuccess = (userData) => {
-        setUser(userData.userName);
-        setIsOpen(false);
-        ChatService.start(userData.userName);
-    };
 
     return (
         <div className="main-window">
