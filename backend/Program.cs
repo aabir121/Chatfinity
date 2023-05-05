@@ -10,6 +10,7 @@ builder.Services.Configure<MongoDbConfig>(builder.Configuration.GetSection(nameo
 builder.Services.AddSingleton<IMongoDbConfig>(provider =>
     provider.GetRequiredService<IOptions<MongoDbConfig>>().Value);
 builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<MessageService>();
 
 builder.Services.AddCors();
 builder.Services.AddControllers();
