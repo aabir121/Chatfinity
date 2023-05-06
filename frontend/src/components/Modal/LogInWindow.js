@@ -2,50 +2,26 @@ import React, {useState} from "react";
 import LogInForm from "./LogInForm";
 import SignUpForm from "./SignUpForm";
 import {Spinner} from "../Common/Spinner";
-import {UserDataService} from "../../services/UserDataService";
+import {Modal} from "react-bootstrap";
+import {showToast} from "../../actions/toastActions";
+import {useDispatch} from "react-redux";
 
-const LogInWindow = ({isOpen, onLoginSuccess}) => {
+const LogInWindow = ({show, handleClose}) => {
     const [loading, setLoading] = useState(false);
     const [showSignUp, setShowSignup] = useState(false);
-
-    if (!isOpen) return null;
+    const dispatch = useDispatch();
 
     const onSignUpClick = () => {
         setShowSignup(true);
     };
 
-    const onSignUpSubmitClick = (formData) => {
-        setLoading(true);
-        const requestBody = {
-            UserName: formData.username,
-            FirstName: formData.firstName,
-            LastName: formData.lastName,
-            DateOfBirth: formData.dob,
-            Password: formData.password,
-        };
-
-        UserDataService.createNewUser(requestBody).then((data) => {
-            console.log(data);
-            setLoading(false);
-            setShowSignup(false);
-        }).catch((error) => {
-            console.error(error);
-            setLoading(false);
-        });
+    const onSignUpSubmitClick = () => {
+        setShowSignup(false);
+        dispatch(showToast('Success', 'Account created. You can now login.'));
     };
 
-    const onLoginSubmitClick = (formData) => {
-        const userBody = {
-            Username: formData.username,
-            Password: formData.password
-        }
-
-        UserDataService.loginUser(userBody).then((data)=>{
-            console.log(data);
-            onLoginSuccess?.(data);
-        }).catch((error)=>{
-            console.error(error);
-        });
+    const onLoginSuccess = (loginData) => {
+        handleClose?.(loginData);
     };
 
     const onBackToLoginClick = () => {
@@ -53,19 +29,17 @@ const LogInWindow = ({isOpen, onLoginSuccess}) => {
     };
 
     return (
-        <div className="modal-container">
+        <Modal show={show} onHide={handleClose}>
             {loading && <Spinner/>}
-            <div className="modal-content">
-                {
-                    showSignUp ? (
-                        <SignUpForm onBackToLoginClick={onBackToLoginClick}
-                                    onSignUpSubmitClick={onSignUpSubmitClick}></SignUpForm>
-                    ) : (
-                        <LogInForm onLoginClick={onLoginSubmitClick} onSignUpClick={onSignUpClick}></LogInForm>
-                    )
-                }
-            </div>
-        </div>
+            {
+                showSignUp ? (
+                    <SignUpForm onBackToLoginClick={onBackToLoginClick}
+                                onSignUpSubmitClick={onSignUpSubmitClick}></SignUpForm>
+                ) : (
+                    <LogInForm onLoginSuccess={onLoginSuccess} onSignUpClick={onSignUpClick}></LogInForm>
+                )
+            }
+        </Modal>
     );
 };
 

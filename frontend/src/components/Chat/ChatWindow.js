@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import ChatInput from "./ChatInput";
 import ChatMessage from "./ChatMessage";
 import ChatService from "../../services/ChatService";
@@ -7,15 +7,19 @@ import LogInWindow from "../Modal/LogInWindow";
 import "../../styles/Chat/ChatWindow.css";
 import "../../styles/Modal/Modal.css";
 import {MessageDataService} from "../../services/MessageDataService";
+import {useDispatch} from "react-redux";
+import {showToast} from "../../actions/toastActions";
 
 function ChatWindow() {
     const [allMessage, setAllMessage] = useState([]);
     const [userName, setUserName] = useState('');
     const [allUsers, setAllUsers] = useState([]);
-    const [isOpen, setIsOpen] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const latestMsgRef = useRef(null);
+    const dispatch = useDispatch();
 
     const openModal = () => {
-        setIsOpen(true);
+        setShowLoginModal(true);
     };
 
     const sendMessage = (msg) => {
@@ -28,8 +32,10 @@ function ChatWindow() {
 
     const onLoginSuccess = (userData) => {
         const currName = userData.userName;
+        dispatch(showToast('Success', 'Login Successful'));
+
         setUserName(currName);
-        setIsOpen(false);
+        setShowLoginModal(false);
         ChatService.start(currName);
         ChatService.setOnConnectedHandler(() => {
             ChatService.getAllUsers();
@@ -38,7 +44,7 @@ function ChatWindow() {
                     const messages = [];
                     data.forEach(d=>{
                         messages.push({
-                            user: d.from,
+                            userName: d.from,
                             msg: d.content,
                             type: d.from === currName ? 'send' : 'receive',
                             ts: d.sentAt
@@ -53,25 +59,31 @@ function ChatWindow() {
         });
     };
 
+    useEffect(() => {
+        if (latestMsgRef.current) {
+            latestMsgRef.current.scrollIntoView();
+        }
+    }, [allMessage]);
+
     useEffect(()=>{
         openModal();
-        ChatService.setReceiveMessageHandler((user, msg) => {
+        ChatService.setReceiveMessageHandler((userName, msg) => {
             setAllMessage((prevMsg) => [...prevMsg, {
-                user,
+                userName,
                 msg,
                 type: "receive",
                 ts: new Date().toISOString()
             }]);
         });
-        ChatService.setSendMessageHandler((user, msg) => {
+        ChatService.setSendMessageHandler((userName, msg) => {
             MessageDataService.createMessage({
-                from: user,
+                from: userName,
                 to: 'all',
                 content: msg,
             })
                 .then((data)=>{
                     setAllMessage((prevMsg) => [...prevMsg, {
-                        user: data.from,
+                        userName: data.from,
                         msg: data.content,
                         type: "send",
                         ts: data.sentAt
@@ -85,16 +97,16 @@ function ChatWindow() {
     }, []);
 
     useEffect(() => {
-        ChatService.setAnnounceUserHandler((user, joined) => {
+        ChatService.setAnnounceUserHandler((msgUser, joined) => {
             if (joined) {
-                setAllUsers(prevState => [...prevState, user]);
+                setAllUsers(prevState => [...prevState, msgUser]);
             } else {
-                const newUserList = allUsers.filter(u => u.userName !== user.userName);
+                const newUserList = allUsers.filter(u => u.userName !== msgUser.userName);
                 setAllUsers(newUserList)
             }
             setAllMessage((prevMsg) => [...prevMsg, {
-                user: user.userName,
-                msg: `${user.userName} just ${joined ? 'joined' : 'left'} the chat`,
+                userName: msgUser.userName,
+                msg: `${msgUser.userName} just ${joined ? 'joined' : 'left'} the chat`,
                 type: "status",
                 ts: new Date().toISOString()
             }]);
@@ -102,17 +114,17 @@ function ChatWindow() {
     }, [allUsers]);
 
     useEffect(() => {
-        ChatService.setOnTypingStatusHandler((user, isTyping)=>{
-            const hasTyping = allMessage.some(m=>m.user === user && m.type === "typing");
+        ChatService.setOnTypingStatusHandler((userName, isTyping)=>{
+            const hasTyping = allMessage.some(m=>m.userName === userName && m.type === "typing");
             if (isTyping && !hasTyping) {
                 setAllMessage((prevMsg) => [...prevMsg, {
-                    user: user,
-                    msg: `${user} is typing ....`,
+                    userName,
+                    msg: `${userName} is typing ....`,
                     type: "typing",
                     ts: new Date().toISOString()
                 }]);
             } else if (!isTyping && hasTyping) {
-                const newMsgList = allMessage.filter(m=>!(m.type === "typing" && m.user === user));
+                const newMsgList = allMessage.filter(m=>!(m.type === "typing" && m.userName === userName));
                 setAllMessage(newMsgList);
             }
         });
@@ -120,12 +132,14 @@ function ChatWindow() {
 
     return (
         <div className="main-window">
-            <LogInWindow isOpen={isOpen} onLoginSuccess={onLoginSuccess}></LogInWindow>
+            <LogInWindow show={showLoginModal} handleClose={onLoginSuccess}></LogInWindow>
             <ChatUserList allUsers={allUsers}></ChatUserList>
             <div className="chat-window">
                 <div className="chat-messages">
                     {allMessage.map((obj, index) => (
-                        <ChatMessage key={index} message={obj}></ChatMessage>
+                        <div ref={index === allMessage.length - 1 ? latestMsgRef : null} key={obj.ts}>
+                            <ChatMessage prevMessageObj={index > 1 ? allMessage[index - 1] : null} messageObj={obj}></ChatMessage>
+                        </div>
                     ))}
                 </div>
                 <ChatInput setTypingStatus={setTypingStatus} sendMessage={sendMessage}></ChatInput>

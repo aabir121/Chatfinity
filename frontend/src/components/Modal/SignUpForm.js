@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import '../../styles/Modal/SignUpForm.css'; // Import the CSS file for styling
+import React, {useState} from 'react';
+import '../../styles/Modal/SignUpForm.css';
+import {PasswordInput} from "../Common/PasswordInput";
+import {UserDataService} from "../../services/UserDataService";
 
 const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
     const [formData, setFormData] = useState({
@@ -13,21 +15,21 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
     });
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        const errors= formData.errors;
+        const {name, value} = e.target;
+        const errors = formData.errors;
         if (errors.hasOwnProperty(name)) {
             errors[name] = "";
         }
 
         setFormData((prevState) =>
-            ({ ...prevState, [name]: value, errors: errors }));
+            ({...prevState, [name]: value, errors: errors}));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         // Validate form data
         const errors = {};
-        const { dob, password, confirmPassword } = formData;
+        const {dob, password, confirmPassword} = formData;
         const currentDate = new Date();
         const dobDate = new Date(dob);
         const ageDifference = currentDate - dobDate;
@@ -43,14 +45,29 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
             errors.confirmPassword = "Confirm password does not match";
         }
         if (Object.keys(errors).length === 0) {
-            // Submit form data
-            onSignUpSubmitClick(formData);
+            createAccount();
         } else {
-            setFormData((prevState) => ({ ...prevState, errors }));
+            setFormData((prevState) => ({...prevState, errors}));
         }
     };
 
-    const { username, firstName, lastName, dob, password, confirmPassword, errors } = formData;
+    const createAccount = () => {
+        const requestBody = {
+            UserName: formData.username,
+            FirstName: formData.firstName,
+            LastName: formData.lastName,
+            DateOfBirth: formData.dob,
+            Password: formData.password,
+        };
+
+        UserDataService.createNewUser(requestBody).then((data) => {
+            onSignUpSubmitClick(data);
+        }).catch((error) => {
+            console.error(error);
+        });
+    }
+
+    const {username, firstName, lastName, dob, password, confirmPassword, errors} = formData;
 
     return (
         <div className="signup-form-container">
@@ -78,23 +95,12 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
                     placeholder="Last Name (50 char max)"
                 />
                 {errors.dob && <div className="error">{errors.dob}</div>}
-                <input type="date" name="dob" value={dob} onChange={handleChange} />
+                <input type="date" name="dob" value={dob} onChange={handleChange}/>
                 {errors.password && <div className="error">{errors.password}</div>}
-                <input
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={handleChange}
-                    placeholder="Password"
-                />
+                <PasswordInput onChange={handleChange} passValue={password}></PasswordInput>
                 {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
-                <input
-                    type="password"
-                    name="confirmPassword"
-                    value={confirmPassword}
-                    onChange={handleChange}
-                    placeholder="Confirm Password"
-                />
+                <PasswordInput onChange={handleChange} passValue={confirmPassword}
+                               placeholder={"Confirm Password"} name={"confirmPassword"}></PasswordInput>
                 <button type="submit">Sign Up</button>
             </form>
             <div className="login-link">

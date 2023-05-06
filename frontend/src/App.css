@@ -1,4 +1,8 @@
 /* Chat window styles */
+.App {
+  position: relative;
+}
+
 .main-window {
   display: flex;
   flex-direction: row;
