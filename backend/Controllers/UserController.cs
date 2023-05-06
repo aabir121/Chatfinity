@@ -33,15 +33,9 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<ActionResult<User>> Login(UserDto userDto)
+    public async Task<ActionResult<User?>> Login(UserDto userDto)
     {
-        var user = await _userService.AuthAndGetUser(userDto);
-        if (user is null)
-        {
-            return Unauthorized();
-        }
-
-        return user;
+        return await _userService.AuthAndGetUser(userDto);
     }
 
     [HttpPost]

@@ -1,4 +1,5 @@
 using backend.DTOs;
+using backend.ErrorManagement.Exceptions;
 using backend.Models;
 using backend.Utils;
 using MongoDB.Driver;
@@ -24,10 +25,17 @@ public class UserService : BaseService<User>
         var user = await Collection.Find(x => x.UserName == userDto.Username).FirstOrDefaultAsync();
         if (user is null)
         {
-            return null;
+            throw new NotFoundException("User not found. Please check your username and try again.");
         }
 
-        return PasswordUtils.HashString(userDto.Password) == user.Password ? user : null;
+        if (PasswordUtils.HashString(userDto.Password) != user.Password)
+        {
+            throw new backend.ErrorManagement.Exceptions.InvalidCredentialsException(
+                "Invalid Credentials. Please check your username and password and try again.");
+        }
+        
+
+        return user;
     }
 
     public async Task CreateAsync(User user)

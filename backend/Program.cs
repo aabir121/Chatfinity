@@ -1,6 +1,7 @@
 using backend.Hubs;
 using backend.Models;
 using backend.Services;
+using backend.ErrorManagement.Configurations;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +39,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
 app.MapHub<ChatHub>("/chatHub");
 
