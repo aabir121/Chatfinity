@@ -29,7 +29,8 @@ const LogInWindow = ({show, handleClose}) => {
 
     return (
         <div ref={modalContainerRef}>
-            <Modal container={modalContainerRef.current} show={show} onHide={handleClose}>
+            <Modal container={modalContainerRef.current} backdrop="static"
+                   show={show} onHide={handleClose}>
                 {
                     showSignUp ? (
                         <SignUpForm onBackToLoginClick={onBackToLoginClick}

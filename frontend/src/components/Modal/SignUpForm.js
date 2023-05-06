@@ -86,27 +86,43 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
                     onChange={handleChange}
                     placeholder="Username (15 char max)"
                 />
-                <input
-                    type="text"
-                    name="firstName"
-                    value={firstName}
-                    onChange={handleChange}
-                    placeholder="First Name (50 char max)"
-                />
-                <input
-                    type="text"
-                    name="lastName"
-                    value={lastName}
-                    onChange={handleChange}
-                    placeholder="Last Name (50 char max)"
-                />
+                <div className="row">
+                    <div className="col-md-6">
+                        <input
+                            type="text"
+                            name="firstName"
+                            value={firstName}
+                            onChange={handleChange}
+                            placeholder="First Name (50 char max)"
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <input
+                            type="text"
+                            name="lastName"
+                            value={lastName}
+                            onChange={handleChange}
+                            placeholder="Last Name (50 char max)"
+                        />
+                    </div>
+                </div>
                 {errors.dob && <div className="error">{errors.dob}</div>}
                 <input type="date" name="dob" value={dob} onChange={handleChange}/>
-                {errors.password && <div className="error">{errors.password}</div>}
-                <PasswordInput onChange={handleChange} passValue={password}></PasswordInput>
-                {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
-                <PasswordInput onChange={handleChange} passValue={confirmPassword}
-                               placeholder={"Confirm Password"} name={"confirmPassword"}></PasswordInput>
+                <div className="row">
+                    <div className="col-md-6">
+                        {errors.password && <div className="error">{errors.password}</div>}
+                        <div className="password-container">
+                            <PasswordInput onChange={handleChange} passValue={password}></PasswordInput>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
+                        <div className="password-container">
+                            <PasswordInput onChange={handleChange} passValue={confirmPassword}
+                                           placeholder={"Confirm Password"} name={"confirmPassword"}></PasswordInput>
+                        </div>
+                    </div>
+                </div>
                 <button type="submit">Sign Up</button>
             </form>
             <div className="login-link">

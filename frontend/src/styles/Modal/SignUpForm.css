@@ -1,6 +1,6 @@
 .signup-form-container {
     margin: 0 auto;
-    padding: 40px;
+    padding: 20px 40px;
     border-radius: 5px;
     width: 100%;
 }
@@ -19,6 +19,7 @@ h2 {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 3px;
+    width: 100%;
 }
 
 .signup-form button[type="submit"] {
@@ -77,6 +78,10 @@ h2 {
     color: #007bff;
     text-decoration: underline;
     cursor: pointer;
+}
+
+.login-link p {
+    margin-bottom: 5px;
 }
 
 .login-link a:hover {

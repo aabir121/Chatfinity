@@ -1,19 +1,21 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import PropTypes from "prop-types";
 import "../../styles/Chat/ChatMessage.css";
 import {Tooltip, OverlayTrigger} from "react-bootstrap";
+import {formatChatTimestamp} from "./Utils";
 
-function ChatMessage(props) {
-    const {userName, msg, type, ts} = props.messageObj;
-    const {userName: prevName, type: prevType} = props.prevMessageObj || {};
+function ChatMessage({messageObj, prevMessageObj}) {
+    const {userName, msg, type, ts} = messageObj;
+    const {userName: prevName, type: prevType} = prevMessageObj || {};
     const sent = type === "send";
     const isStatus = type === "status";
     const messageClass = `message ${sent ? 'message-sent' : ''}`;
     const hideName = ['send', 'receive', 'typing'].includes(prevType) && prevName === userName;
-    const tooltipPlacement = type === 'send' ? 'left' : type === 'receive' ? 'right' : null;
+    const containerRef = useRef(null);
+    const tooltipContent = <Tooltip>{formatChatTimestamp(ts)}</Tooltip>;
 
     return (
-        <div>
+        <div ref={containerRef}>
             {isStatus ? (
                 <div className="status-text">
                     <span>{msg}</span>
@@ -21,7 +23,9 @@ function ChatMessage(props) {
             ) : (
                 <div className={messageClass}>
                     {!hideName && <div className="message-sender">{userName}</div>}
-                    <OverlayTrigger overlay={<Tooltip>{ts}</Tooltip>} placement={tooltipPlacement}>
+                    <OverlayTrigger trigger="hover" container={containerRef} delay={{show: 500, hide: 400}}
+                                    overlay={tooltipContent}
+                                    placement="auto" defaultShow={false}>
                         <div className="message-content">{msg}</div>
                     </OverlayTrigger>
                 </div>

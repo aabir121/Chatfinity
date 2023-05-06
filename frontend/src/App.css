@@ -9,3 +9,10 @@
   border-radius: 12px;
   height: 100vh;
 }
+
+input::placeholder {
+  color: #999;
+  font-style: italic;
+  font-size: 12px;
+  line-height: 12px;
+}
