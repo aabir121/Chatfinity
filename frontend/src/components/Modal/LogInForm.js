@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import "../../styles/Modal/LoginForm.css";
 import {PasswordInput} from "../Common/PasswordInput";
 import {UserDataService} from "../../services/UserDataService";
+import {useDispatch} from "react-redux";
+import {hideLoader, showLoader} from "../../actions/loaderActions";
 
 const LogInForm = ({errorText, onLoginSuccess, onSignUpClick}) => {
     const [formData, setFormData] = useState({
@@ -9,6 +11,8 @@ const LogInForm = ({errorText, onLoginSuccess, onSignUpClick}) => {
         password: '',
         errorText: ''
     });
+
+    const dispatch = useDispatch();
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
@@ -22,10 +26,13 @@ const LogInForm = ({errorText, onLoginSuccess, onSignUpClick}) => {
             Password: formData.password
         }
 
+        dispatch(showLoader());
         UserDataService.loginUser(userBody).then((data) => {
             onLoginSuccess?.(data);
+            dispatch(hideLoader());
         }).catch((error) => {
             console.error(error);
+            dispatch(hideLoader());
             setFormData({...formData, errorText: 'Unable to login. Please check your username and/or password and try again.'});
         });
     }

@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import '../../styles/Modal/SignUpForm.css';
 import {PasswordInput} from "../Common/PasswordInput";
 import {UserDataService} from "../../services/UserDataService";
+import {useDispatch} from "react-redux";
+import {hideLoader, showLoader} from "../../actions/loaderActions";
 
 const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
     const [formData, setFormData] = useState({
@@ -13,6 +15,7 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
         confirmPassword: "",
         errors: {},
     });
+    const dispatch = useDispatch();
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -60,10 +63,13 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
             Password: formData.password,
         };
 
+        dispatch(showLoader());
         UserDataService.createNewUser(requestBody).then((data) => {
             onSignUpSubmitClick(data);
+            dispatch(hideLoader());
         }).catch((error) => {
             console.error(error);
+            dispatch(hideLoader());
         });
     }
 
