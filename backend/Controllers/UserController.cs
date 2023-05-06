@@ -35,7 +35,8 @@ public class UserController : ControllerBase
     [HttpPost("Login")]
     public async Task<ActionResult<User?>> Login(UserDto userDto)
     {
-        return await _userService.AuthAndGetUser(userDto);
+        var user = await _userService.AuthAndGetUser(userDto);
+        return user;
     }
 
     [HttpPost]

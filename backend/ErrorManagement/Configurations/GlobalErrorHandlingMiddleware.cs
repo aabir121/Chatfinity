@@ -58,7 +58,7 @@ public class GlobalErrorHandlingMiddleware
             stackTrace = exception.StackTrace;
         }
 
-        var exceptionResult = JsonSerializer.Serialize(new { error = message, status= (int) status });
+        var exceptionResult = JsonSerializer.Serialize(new { errorMessage = message, status= (int) status });
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)status;
 

@@ -40,6 +40,12 @@ public class UserService : BaseService<User>
 
     public async Task CreateAsync(User user)
     {
+        var userInDb = await GetAsync(user.UserName);
+        if (userInDb != null)
+        {
+            throw new BadRequestException("The username is already taken. Please try a new one.");
+        }
+        
         user.Password = PasswordUtils.HashString(user.Password);
         await Collection.InsertOneAsync(user);
     }

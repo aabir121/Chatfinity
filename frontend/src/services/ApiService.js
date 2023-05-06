@@ -9,7 +9,10 @@ async function makeApiCall(method, url, body) {
     });
 
     if (!response.ok) {
-        const error = new Error(`HTTP error! Status: ${response.status}`);
+        const newErrorObj = await response.json();
+        const error = new Error(response.statusText);
+        error.code = newErrorObj.status;
+        error.description = newErrorObj.errorMessage;
         throw error;
     }
 

@@ -33,7 +33,7 @@ const LogInForm = ({errorText, onLoginSuccess, onSignUpClick}) => {
         }).catch((error) => {
             console.error(error);
             dispatch(hideLoader());
-            setFormData({...formData, errorText: 'Unable to login. Please check your username and/or password and try again.'});
+            setFormData({...formData, errorText: error.description});
         });
     }
 

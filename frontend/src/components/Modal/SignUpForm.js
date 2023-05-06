@@ -70,6 +70,10 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
         }).catch((error) => {
             console.error(error);
             dispatch(hideLoader());
+            const errorObj = {
+                submit: error.description
+            }
+            setFormData({...formData, errors: errorObj})
         });
     }
 
@@ -123,6 +127,7 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
                         </div>
                     </div>
                 </div>
+                {errors.submit && <div className="error">{errors.submit}</div> }
                 <button type="submit">Sign Up</button>
             </form>
             <div className="login-link">
