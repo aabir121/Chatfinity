@@ -11,7 +11,7 @@ public class ChatHub : Hub<IChatClient>
     public override async Task OnConnectedAsync()
     {
         var userName = Context.GetHttpContext()?.Request.Query["user"];
-        var messageUser = new MessageUser(Context.ConnectionId, userName, DateTime.Now, true);
+        var messageUser = new MessageUser(userName, DateTime.Now, true);
         ConnectionMap[Context.ConnectionId] = messageUser;
         
         await base.OnConnectedAsync();

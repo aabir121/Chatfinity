@@ -1,7 +1,7 @@
 import {ApiService} from "./ApiService";
 export const UserDataService={
     getAllUsers : () => {
-        return ApiService.getData("/User");
+        return ApiService.getData("/User/Chat");
     },
 
     createNewUser : (userData) => {

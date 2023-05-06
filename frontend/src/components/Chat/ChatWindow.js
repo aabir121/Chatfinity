@@ -9,12 +9,11 @@ import "../../styles/Modal/Modal.css";
 import {MessageDataService} from "../../services/MessageDataService";
 import {useDispatch} from "react-redux";
 import {showToast} from "../../actions/toastActions";
-import {loadUsers} from "../../actions/userListActions";
+import {loadCurrentUser, setUserAvailableFLag} from "../../actions/userListActions";
 
 function ChatWindow() {
     const [allMessage, setAllMessage] = useState([]);
     const [userName, setUserName] = useState('');
-    const [allUsers, setAllUsers] = useState([]);
     const [showLoginModal, setShowLoginModal] = useState(false);
     const latestMsgRef = useRef(null);
     const dispatch = useDispatch();
@@ -34,12 +33,12 @@ function ChatWindow() {
     const onLoginSuccess = (userData) => {
         const currName = userData.userName;
         dispatch(showToast('Success', 'Login Successful'));
+        dispatch(loadCurrentUser(currName));
 
         setUserName(currName);
         setShowLoginModal(false);
         ChatService.start(currName);
         ChatService.setOnConnectedHandler(() => {
-            ChatService.getAllUsers();
             MessageDataService.getAllMessage()
                 .then((data)=>{
                     const messages = [];
@@ -53,11 +52,6 @@ function ChatWindow() {
                         setAllMessage(prevState => messages);
                     });
                 })
-        });
-        ChatService.setOnGetAllUsersHandler((users) => {
-            users = users.filter(u=>u.userName !== currName);
-            setAllUsers(users);
-            dispatch(loadUsers(users));
         });
     };
 
@@ -100,12 +94,7 @@ function ChatWindow() {
 
     useEffect(() => {
         ChatService.setAnnounceUserHandler((msgUser, joined) => {
-            if (joined) {
-                setAllUsers(prevState => [...prevState, msgUser]);
-            } else {
-                const newUserList = allUsers.filter(u => u.userName !== msgUser.userName);
-                setAllUsers(newUserList)
-            }
+            dispatch(setUserAvailableFLag(msgUser.userName, joined));
             setAllMessage((prevMsg) => [...prevMsg, {
                 userName: msgUser.userName,
                 msg: `${msgUser.userName} just ${joined ? 'joined' : 'left'} the chat`,
@@ -113,7 +102,7 @@ function ChatWindow() {
                 ts: new Date().toISOString()
             }]);
         });
-    }, [allUsers]);
+    }, []);
 
     useEffect(() => {
         ChatService.setOnTypingStatusHandler((userName, isTyping)=>{

@@ -80,7 +80,7 @@ public class UserController : ControllerBase
 
         var disconnectedUsers = allUsers
             .Where(user => !connectedUserSet.Contains(user.UserName))
-            .Select(user => new MessageUser("", user.UserName, DateTime.MinValue, false))
+            .Select(user => new MessageUser(user.UserName, DateTime.MinValue, false))
             .ToList();
 
         var allConnectedUsers = ChatHub.ConnectionMap.Values

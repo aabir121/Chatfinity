@@ -19,24 +19,38 @@
     color: #333;
 }
 
-.no-users-message {
-    margin: auto;
-}
-
 .user-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
 }
 
-.user-list li {
+.user-list-item {
     padding: 16px;
     font-size: 15px;
     border-bottom: 1px solid #e0e0e0;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
+    display: flex;
+    align-content: center;
 }
 
-.user-list li:hover {
+.user-list-name {
+    flex: 5;
+}
+
+.user-list-status-container {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: auto;
+}
+
+.user-list-status-container.online {
+    background: rgb(49, 162, 76);
+}
+
+.user-list-status-container.offline {
+    background: rgba(128, 128, 128, 0.7);
+}
+
+.user-list-item:hover {
     background-color: #f4f4f4;
 }

@@ -1,23 +1,26 @@
-import {LOAD_USERS, SET_USER_AVAILABLE_FLAG} from "../actions/userListActions";
+import {LOAD_CURRENT_USER, LOAD_USERS, SET_USER_AVAILABLE_FLAG} from "../actions/userListActions";
 
 const initialState = {
-    allUsers: [
-        {
-            connectionId: Date.now(),
-            userName: "All",
-            joinTime: Date.now(),
-            isOnline: false
-        }
-    ]
+    currentUserName: "",
+    allUsers: []
 };
 
 const userListReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_USERS:
+            if (!action.payload || !action.payload.length) {
+                return state;
+            }
+
+            const newArr = [...state.allUsers, ...action.payload];
             return {
                 ...state,
-                allUsers: !action.payload || !action.payload.length ?
-                    [...state.allUsers] : [...state.allUsers, action.payload]
+                allUsers: newArr
+            };
+        case LOAD_CURRENT_USER:
+            return {
+                ...state,
+                currentUserName: action.payload
             };
         case SET_USER_AVAILABLE_FLAG:
             const {userName, isOnline} = action.payload;
@@ -28,7 +31,7 @@ const userListReducer = (state = initialState, action) => {
             }
             const updatedUser = {...allUsers[index], isOnline};
             const updatedAllUsers = [
-                {...allUsers[0], isOnline: allUsers.slice(1).some(u => u.isOnline)},
+                {...allUsers[0], isOnline: allUsers.slice(1).some(u => u.isOnline) || updatedUser.isOnline},
                 ...allUsers.slice(1, index),
                 updatedUser,
                 ...allUsers.slice(index + 1),

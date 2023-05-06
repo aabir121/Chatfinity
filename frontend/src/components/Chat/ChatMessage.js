@@ -23,7 +23,7 @@ function ChatMessage({messageObj, prevMessageObj}) {
             ) : (
                 <div className={messageClass}>
                     {!hideName && <div className="message-sender">{userName}</div>}
-                    <OverlayTrigger trigger="hover" container={containerRef} delay={{show: 500, hide: 400}}
+                    <OverlayTrigger container={containerRef} delay={{show: 500, hide: 400}}
                                     overlay={tooltipContent}
                                     placement="auto" defaultShow={false}>
                         <div className="message-content">{msg}</div>

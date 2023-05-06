@@ -1,3 +1,3 @@
 namespace backend.Models;
 
-public record MessageUser(string connectionId, string userName, DateTime joinTime, bool isOnline);
+public record MessageUser(string userName, DateTime joinTime, bool isOnline);
