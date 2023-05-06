@@ -9,6 +9,7 @@ import "../../styles/Modal/Modal.css";
 import {MessageDataService} from "../../services/MessageDataService";
 import {useDispatch} from "react-redux";
 import {showToast} from "../../actions/toastActions";
+import {loadUsers} from "../../actions/userListActions";
 
 function ChatWindow() {
     const [allMessage, setAllMessage] = useState([]);
@@ -56,6 +57,7 @@ function ChatWindow() {
         ChatService.setOnGetAllUsersHandler((users) => {
             users = users.filter(u=>u.userName !== currName);
             setAllUsers(users);
+            dispatch(loadUsers(users));
         });
     };
 
@@ -133,7 +135,7 @@ function ChatWindow() {
     return (
         <div className="main-window">
             <LogInWindow show={showLoginModal} handleClose={onLoginSuccess}></LogInWindow>
-            <ChatUserList allUsers={allUsers}></ChatUserList>
+            <ChatUserList></ChatUserList>
             <div className="chat-window">
                 <div className="chat-messages">
                     {allMessage.map((obj, index) => (

@@ -1,7 +1,9 @@
 import React from "react";
 import "../../styles/Chat/ChatUserList.css";
+import {useSelector} from "react-redux";
 
-function ChatUserList({allUsers}) {
+function ChatUserList() {
+    const allUsers = useSelector((state) => state.userList.allUsers);
     const noUsers = allUsers.length === 0;
 
     return (
