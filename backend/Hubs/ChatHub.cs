@@ -28,16 +28,6 @@ public class ChatHub : Hub<IChatClient>
         await Clients.Others.AnnounceUser(user, joined);
     }
 
-    public async Task GetAllUsers()
-    {
-        var otherUsers = ConnectionMap
-            .Where(pair => pair.Key != Context.ConnectionId)
-            .Select(pair => pair.Value)
-            .ToList();
-        
-        await Clients.Caller.GetAllUsers(otherUsers);
-    }
-
     public async Task TypingStatus(string user, bool isTyping)
     {
         await Clients.AllExcept(Context.ConnectionId).TypingStatus(user, isTyping);

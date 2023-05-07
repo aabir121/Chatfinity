@@ -12,7 +12,7 @@ class _ChatService {
 
     initialize = (userName) => {
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl("http://localhost:5095/chatHub?user="+userName)
+            .withUrl("http://localhost:5095/chatHub?user=" + userName)
             .withAutomaticReconnect()
             .build();
 
@@ -35,7 +35,7 @@ class _ChatService {
 
     start = (userName) => {
         if (this.connection) {
-            this.connection.start()
+            return this.connection.start()
                 .then(() => {
                     console.log("SignalR Connected");
                     this.onConnected?.();
@@ -45,20 +45,12 @@ class _ChatService {
                 });
         } else {
             this.initialize(userName);
-            this.start(userName);
+            return this.start(userName);
         }
     }
 
     stop = () => {
         this.connection?.stop();
-    }
-
-    setOnConnectedHandler = (handler) => {
-        this.onConnected = handler;
-    }
-
-    setOnGetAllUsersHandler = (handler) => {
-        this.onGetAllUsers = handler;
     }
 
     setReceiveMessageHandler = (handler) => {
@@ -79,16 +71,12 @@ class _ChatService {
 
     invoke = (functionName, callback, ...args) => {
         this.connection?.invoke(functionName, ...args)
-            .then(()=>{
+            .then(() => {
                 callback?.(...args);
             })
             .catch((err) => {
                 console.log("SignalR Invocation Error", err);
             });
-    }
-
-    getAllUsers = () => {
-        this.invoke(SignalRFunctionNames.GET_ALL_USERS);
     }
 
     sendMessage = (user, message) => {
