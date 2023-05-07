@@ -2,6 +2,7 @@ using backend.Hubs;
 using backend.Models;
 using backend.Services;
 using backend.ErrorManagement.Configurations;
+using backend.Repositories;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<MongoDbConfig>(builder.Configuration.GetSection(nameof(MongoDbConfig)));
 builder.Services.AddSingleton<IMongoDbConfig>(provider =>
     provider.GetRequiredService<IOptions<MongoDbConfig>>().Value);
-builder.Services.AddSingleton<UserService>();
-builder.Services.AddSingleton<MessageService>();
+
+// Register repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+
+// Register services
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 
 builder.Services.AddCors();
 builder.Services.AddControllers();

@@ -8,9 +8,9 @@ namespace backend.Controllers;
 [Route("/api/[controller]")]
 public class MessageController : ControllerBase
 {
-    private readonly MessageService _messageService;
+    private readonly IMessageService _messageService;
 
-    public MessageController(MessageService messageService)
+    public MessageController(IMessageService messageService)
     {
         this._messageService = messageService;
     }

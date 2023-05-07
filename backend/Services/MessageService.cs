@@ -1,26 +1,32 @@
 using backend.Models;
+using backend.Repositories;
 using MongoDB.Driver;
 
 namespace backend.Services;
 
-public class MessageService : BaseService<Message>
+public class MessageService : IMessageService
 {
-    public MessageService(IMongoDbConfig config) : base(config) {}
+    private readonly IMessageRepository _messageRepository;
+
+    public MessageService(IMessageRepository messageRepository)
+    {
+        this._messageRepository = messageRepository;
+    }
 
     public async Task<Message> CreateAsync(Message message)
     {
         message.SentAt = DateTime.Now;
-        await Collection.InsertOneAsync(message);
+        await _messageRepository.CreateMessage(message);
         return message;
     }
 
     public async Task<List<Message>?> GetAsync()
     {
-        return await Collection.Find(_=>true).ToListAsync();
+        return await _messageRepository.FindAllMessages();
     }
 
     public async Task<List<Message>?> GetAsync(string from, string to)
     {
-        return await Collection.Find(x => x.From == from && x.To == to).ToListAsync();
+        return await _messageRepository.FindMessageByParticipants(from, to);
     }
 }

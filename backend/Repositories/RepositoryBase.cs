@@ -1,13 +1,13 @@
 using backend.Models;
 using MongoDB.Driver;
 
-namespace backend.Services;
+namespace backend.Repositories;
 
-public abstract class BaseService<T>
+public class RepositoryBase<T>
 {
     protected readonly IMongoCollection<T> Collection;
 
-    protected BaseService(IMongoDbConfig config)
+    protected RepositoryBase(IMongoDbConfig config)
     {
         var mongoClient = new MongoClient(
             config.ConnectionString);
