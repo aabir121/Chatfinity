@@ -3,6 +3,7 @@ using backend.ErrorManagement.Exceptions;
 using backend.Models;
 using backend.Repositories;
 using backend.Utils;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace backend.Services;
@@ -63,5 +64,10 @@ public class UserService : IUserService
     public async Task RemoveAsync(string userName)
     {
         await _userRepository.DeleteUser(userName);
+    }
+
+    public bool IsUserNameValid(string userName)
+    {
+        return !string.IsNullOrEmpty(userName) && _userRepository.IsUserNameValid(userName);
     }
 }

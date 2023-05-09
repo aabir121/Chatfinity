@@ -18,4 +18,14 @@ public class User
     [BsonElement("dob")] public DateTime DateOfBirth { get; set; }
 
     [BsonElement("pwd")] public string Password { get; set; }
+    
+    public User(string? id, string userName, string firstName, string lastName, DateTime dateOfBirth, string password)
+    {
+        Id = id;
+        UserName = userName;
+        FirstName = firstName;
+        LastName = lastName;
+        DateOfBirth = dateOfBirth;
+        Password = password;
+    }
 }

@@ -9,4 +9,5 @@ public interface IUserRepository
     Task CreateUser(User user);
     Task UpdateUser(string userName, User user);
     Task DeleteUser(string userName);
+    bool IsUserNameValid(string userName);
 }

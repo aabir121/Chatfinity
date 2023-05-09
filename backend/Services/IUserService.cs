@@ -1,5 +1,6 @@
 using backend.DTOs;
 using backend.Models;
+using MongoDB.Bson;
 
 namespace backend.Services;
 
@@ -11,4 +12,5 @@ public interface IUserService
     Task CreateAsync(User user);
     Task UpdateOneAsync(string userName, User userToUpdate);
     Task RemoveAsync(string userName);
+    bool IsUserNameValid(string userName);
 }

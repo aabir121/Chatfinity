@@ -62,16 +62,16 @@ function ChatWindow() {
 
     const typingStatusHandler = () => {
         ChatService.setOnTypingStatusHandler((userName, isTyping) => {
-            const hasTyping = allMessage.some(m => m.userName === userName && m.type === "typing");
+            const hasTyping = allMessage.some(m => m.sender === userName && m.type === "typing");
             if (isTyping && !hasTyping) {
                 setAllMessage((prevMsg) => [...prevMsg, {
-                    userName,
-                    msg: `${userName} is typing ....`,
+                    sender: userName,
+                    content: `${userName} is typing ....`,
                     type: "typing",
-                    ts: new Date().toISOString()
+                    timestamp: new Date().toISOString()
                 }]);
             } else if (!isTyping && hasTyping) {
-                const newMsgList = allMessage.filter(m => !(m.type === "typing" && m.userName === userName));
+                const newMsgList = allMessage.filter(m => !(m.type === "typing" && m.sender === userName));
                 setAllMessage(newMsgList);
             }
         });
@@ -80,29 +80,25 @@ function ChatWindow() {
     const sendMsgHandler = () => {
         ChatService.setSendMessageHandler((userName, msg) => {
             MessageDataService.createMessage({
-                from: userName,
-                to: 'all',
+                type: "public",
+                sender: userName,
                 content: msg,
             })
                 .then((data) => {
                     setAllMessage((prevMsg) => [...prevMsg, {
-                        userName: data.from,
-                        msg: data.content,
-                        type: "send",
-                        ts: data.sentAt
+                        ...data, type: "message"
                     }]);
                 });
-
         });
     };
 
     const receiveMsgHandler = () => {
         ChatService.setReceiveMessageHandler((userName, msg) => {
             setAllMessage((prevMsg) => [...prevMsg, {
-                userName,
-                msg,
-                type: "receive",
-                ts: new Date().toISOString()
+                sender: userName,
+                content: msg,
+                type: "message",
+                timestamp: new Date().toISOString()
             }]);
         });
     };
@@ -111,24 +107,21 @@ function ChatWindow() {
         ChatService.setAnnounceUserHandler((msgUser, joined) => {
             dispatch(setUserAvailableFLag(msgUser.userName, joined));
             setAllMessage((prevMsg) => [...prevMsg, {
-                userName: msgUser.userName,
-                msg: `${msgUser.userName} just ${joined ? 'joined' : 'left'} the chat`,
+                sender: msgUser.userName,
+                content: `${msgUser.userName} just ${joined ? 'joined' : 'left'} the chat`,
                 type: "status",
-                ts: new Date().toISOString()
+                timestamp: new Date().toISOString()
             }]);
         });
     };
 
     const getAllMessages = (currUserName) => {
-        MessageDataService.getAllMessage()
+        MessageDataService.getPublicChat()
             .then((data) => {
                 const messages = [];
                 data.forEach(d => {
                     messages.push({
-                        userName: d.from,
-                        msg: d.content,
-                        type: d.from === currUserName ? 'send' : 'receive',
-                        ts: d.sentAt
+                        ...d, type: 'message'
                     });
                     setAllMessage(prevState => messages);
                 });

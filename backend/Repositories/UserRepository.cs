@@ -31,4 +31,9 @@ public class UserRepository : RepositoryBase<User>, IUserRepository
     {
         await Collection.DeleteOneAsync(userName);
     }
+
+    public bool IsUserNameValid(string userName)
+    {
+        return Collection.AsQueryable().Any(u => u.UserName.Equals(userName));
+    }
 }

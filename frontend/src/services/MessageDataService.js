@@ -2,7 +2,7 @@ import {ApiService} from "./ApiService";
 
 export const MessageDataService = {
     createMessage: (body) => {
-        return ApiService.postData("/Message", body);
+        return ApiService.postData("/Chat/Message", body);
     },
 
     getAllMessage: () => {
@@ -11,5 +11,9 @@ export const MessageDataService = {
 
     getMessages: (from, to) => {
         return ApiService.getData(`/Message/${from}/${to}`);
+    },
+
+    getPublicChat : () => {
+        return ApiService.getData("/Chat/Public");
     }
 }

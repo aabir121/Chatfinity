@@ -33,11 +33,9 @@ public class ChatHub : Hub<IChatClient>
         await Clients.AllExcept(Context.ConnectionId).TypingStatus(user, isTyping);
     }
 
-    public override async Task OnDisconnectedAsync(Exception exception)
+    public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        MessageUser removed;
-
-        if (ConnectionMap.TryRemove(Context.ConnectionId, out removed))
+        if (ConnectionMap.TryRemove(Context.ConnectionId, out var removed))
         {
             await AnnounceUser(removed, false);
         }

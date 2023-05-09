@@ -23,7 +23,7 @@ public class RepositoryBase<T>
         return typeof(T).Name switch
         {
             nameof(User) => config.UsersCollectionName,
-            nameof(Message) => config.MessageCollectionName,
+            nameof(Chat) => config.ChatCollectionName,
             _ => throw new ArgumentException($"Unsupported type {typeof(T).Name}")
         };
     }
