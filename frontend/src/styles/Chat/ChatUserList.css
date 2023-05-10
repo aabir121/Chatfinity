@@ -32,6 +32,18 @@
     align-content: center;
 }
 
+.user-list-item:hover {
+    background-color: #f4f4f4;
+}
+
+.user-list-item.selected {
+    background: rgba(161,201,255,0.2);
+}
+
+.user-list-item.selected:hover {
+    background: rgba(161,201,255,0.5);
+}
+
 .user-list-name {
     flex: 5;
 }
@@ -49,8 +61,4 @@
 
 .user-list-status-container.offline {
     background: rgba(128, 128, 128, 0.7);
-}
-
-.user-list-item:hover {
-    background-color: #f4f4f4;
 }

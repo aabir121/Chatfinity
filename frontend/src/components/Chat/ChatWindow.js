@@ -7,7 +7,7 @@ import LogInWindow from "../Modal/LogInWindow";
 import "../../styles/Chat/ChatWindow.css";
 import "../../styles/Modal/Modal.css";
 import {MessageDataService} from "../../services/MessageDataService";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {showToast} from "../../actions/toastActions";
 import {loadCurrentUser, setUserAvailableFLag} from "../../actions/userListActions";
 
@@ -17,6 +17,8 @@ function ChatWindow() {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const latestMsgRef = useRef(null);
     const dispatch = useDispatch();
+    const chatType = useSelector(state => state.chatWindow.chatType);
+    const participants = useSelector((state) => state.chatWindow.participants);
 
     const openModal = () => {
         setShowLoginModal(true);
@@ -37,6 +39,7 @@ function ChatWindow() {
 
         setUserName(currName);
         setShowLoginModal(false);
+
         ChatService.start(currName)
             .then(() => getAllMessages(currName))
             .then(_ => {
@@ -45,6 +48,14 @@ function ChatWindow() {
                 announceUserHandler();
             });
     };
+
+    useEffect(() => {
+        if (!participants.length) {
+            return;
+        }
+
+        getAllMessages(userName).then(sendMsgHandler);
+    }, [chatType, participants]);
 
     useEffect(() => {
         if (latestMsgRef.current) {
@@ -79,11 +90,16 @@ function ChatWindow() {
 
     const sendMsgHandler = () => {
         ChatService.setSendMessageHandler((userName, msg) => {
-            MessageDataService.createMessage({
-                type: "public",
+            const msgBody = {
+                type: chatType,
                 sender: userName,
                 content: msg,
-            })
+            };
+
+            msgBody.receiver = chatType === "private" && participants.length > 1 ?
+                participants.filter(p=>p !== userName)[0] : "";
+
+            MessageDataService.createMessage(msgBody)
                 .then((data) => {
                     setAllMessage((prevMsg) => [...prevMsg, {
                         ...data, type: "message"
@@ -116,16 +132,18 @@ function ChatWindow() {
     };
 
     const getAllMessages = (currUserName) => {
-        MessageDataService.getPublicChat()
-            .then((data) => {
-                const messages = [];
-                data.forEach(d => {
-                    messages.push({
-                        ...d, type: 'message'
-                    });
-                    setAllMessage(prevState => messages);
+        const getMessagesPromise = chatType === "public" ?
+            MessageDataService.getPublicChat() : MessageDataService.getPrivateChat(participants);
+
+        return getMessagesPromise.then((data) => {
+            const messages = [];
+            data.forEach(d => {
+                messages.push({
+                    ...d, type: 'message'
                 });
             });
+            setAllMessage(prevState => messages);
+        });
     };
 
     return (
@@ -135,7 +153,7 @@ function ChatWindow() {
             <div className="chat-window">
                 <div className="chat-messages">
                     {allMessage.map((obj, index) => (
-                        <div ref={index === allMessage.length - 1 ? latestMsgRef : null} key={obj.ts}>
+                        <div ref={index === allMessage.length - 1 ? latestMsgRef : null} key={obj.timestamp}>
                             <ChatMessage prevMessageObj={index > 1 ? allMessage[index - 1] : null}
                                          messageObj={obj}></ChatMessage>
                         </div>

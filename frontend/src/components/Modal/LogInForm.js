@@ -29,7 +29,6 @@ const LogInForm = ({errorText, onLoginSuccess, onSignUpClick}) => {
         dispatch(showLoader());
         UserDataService.loginUser(userBody).then((data) => {
             onLoginSuccess?.(data);
-            window.userName = data.userName;
             dispatch(hideLoader());
         }).catch((error) => {
             console.error(error);
