@@ -25,11 +25,12 @@ function ChatWindow() {
     };
 
     const sendMessage = (msg) => {
-        ChatService.sendMessage(userName, msg);
+        const msgBody = {...getSendMsgBody(msg)};
+        ChatService.sendMessage(msgBody);
     }
 
     const setTypingStatus = (isTyping) => {
-        ChatService.sendTypingStatus(userName, isTyping);
+        ChatService.sendTypingStatus(userName, chatType, participants, isTyping);
     }
 
     const onLoginModalClose = (userData) => {
@@ -54,7 +55,10 @@ function ChatWindow() {
             return;
         }
 
-        getAllMessages(userName).then(sendMsgHandler);
+        getAllMessages(userName).then(()=>{
+            sendMsgHandler();
+            typingStatusHandler();
+        });
     }, [chatType, participants]);
 
     useEffect(() => {
@@ -72,7 +76,11 @@ function ChatWindow() {
     }, []);
 
     const typingStatusHandler = () => {
-        ChatService.setOnTypingStatusHandler((userName, isTyping) => {
+        ChatService.setOnTypingStatusHandler((userName, type, participantsArr, isTyping) => {
+            if (chatType !== type || new Set(participantsArr).size !== new Set(participants).size) {
+                return;
+            }
+
             const hasTyping = allMessage.some(m => m.sender === userName && m.type === "typing");
             if (isTyping && !hasTyping) {
                 setAllMessage((prevMsg) => [...prevMsg, {
@@ -87,35 +95,43 @@ function ChatWindow() {
             }
         });
     };
+    const getSendMsgBody = (msg) => {
+        const msgBody = {
+            type: chatType,
+            sender: userName,
+            content: msg,
+        };
+
+        msgBody.receiver = chatType === "private" && participants.length > 1 ?
+            participants.filter(p => p !== userName)[0] : "";
+
+        return msgBody;
+    };
 
     const sendMsgHandler = () => {
-        ChatService.setSendMessageHandler((userName, msg) => {
-            const msgBody = {
-                type: chatType,
-                sender: userName,
-                content: msg,
-            };
-
-            msgBody.receiver = chatType === "private" && participants.length > 1 ?
-                participants.filter(p=>p !== userName)[0] : "";
-
-            MessageDataService.createMessage(msgBody)
+        ChatService.setSendMessageHandler((message) => {
+            MessageDataService.createMessage({...message})
                 .then((data) => {
-                    setAllMessage((prevMsg) => [...prevMsg, {
-                        ...data, type: "message"
-                    }]);
+                    addMsgResponseToAllResponse(data);
                 });
         });
     };
 
+    const addMsgResponseToAllResponse = (message) => {
+        setAllMessage((prevMsg) => [...prevMsg, {
+            ...message,
+            type: "message",
+        }]);
+    };
+
     const receiveMsgHandler = () => {
-        ChatService.setReceiveMessageHandler((userName, msg) => {
-            setAllMessage((prevMsg) => [...prevMsg, {
-                sender: userName,
-                content: msg,
-                type: "message",
-                timestamp: new Date().toISOString()
-            }]);
+        ChatService.setReceiveMessageHandler((message) => {
+            if (message.type !== chatType || !participants.includes(message.sender)
+                || (message.type === "private" && !participants.includes(message.receiver))) {
+                return;
+            }
+
+            addMsgResponseToAllResponse(message);
         });
     };
 

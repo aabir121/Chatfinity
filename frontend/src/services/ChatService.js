@@ -7,7 +7,6 @@ class _ChatService {
     onAnnounceUser = null;
     onConnected = null;
     onSendMessage = null;
-    onGetAllUsers = null;
     onTypingStatus = null;
 
     initialize = (userName) => {
@@ -16,20 +15,16 @@ class _ChatService {
             .withAutomaticReconnect()
             .build();
 
-        this.connection.on(SignalRFunctionNames.RECEIVE_MSG, (user, msg) => {
-            this.onReceiveMessage?.(user, msg);
+        this.connection.on(SignalRFunctionNames.RECEIVE_MSG, (message) => {
+            this.onReceiveMessage?.(message);
         });
 
         this.connection.on(SignalRFunctionNames.ANNOUNCE_USER, (user, joined) => {
             this.onAnnounceUser?.(user, joined);
         });
 
-        this.connection.on(SignalRFunctionNames.GET_ALL_USERS, (users) => {
-            this.onGetAllUsers?.(users);
-        });
-
-        this.connection.on(SignalRFunctionNames.TYPING_STATUS, (user, isTyping) => {
-            this.onTypingStatus?.(user, isTyping);
+        this.connection.on(SignalRFunctionNames.TYPING_STATUS, (user, type, participants, isTyping) => {
+            this.onTypingStatus?.(user, type, participants, isTyping);
         });
     }
 
@@ -79,12 +74,12 @@ class _ChatService {
             });
     }
 
-    sendMessage = (user, message) => {
-        this.invoke(SignalRFunctionNames.SEND_MESSAGE, this.onSendMessage, user, message);
+    sendMessage = (msgBody) => {
+        this.invoke(SignalRFunctionNames.SEND_MESSAGE, this.onSendMessage, msgBody);
     }
 
-    sendTypingStatus = (user, isTyping) => {
-        this.invoke(SignalRFunctionNames.TYPING_STATUS, null, user, isTyping);
+    sendTypingStatus = (user, type, participants, isTyping) => {
+        this.invoke(SignalRFunctionNames.TYPING_STATUS, null, user, type, participants, isTyping);
     }
 }
 

@@ -1,11 +1,12 @@
+using backend.DTOs;
 using backend.Models;
 
 namespace backend.Hubs;
 
 public interface IChatClient
 {
-    Task ReceiveMessage(string user, string message);
+    Task SendMessage(CreateMessageDto message);
+    Task ReceiveMessage(CreateMessageDto message);
     Task AnnounceUser(MessageUser messageUser, bool joined);
-    Task GetAllUsers(List<MessageUser> users);
-    Task TypingStatus(string user, bool isTyping);
+    Task TypingStatus(string user, string type, string[] participants, bool isTyping);
 }
