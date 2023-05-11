@@ -1,7 +1,13 @@
-import {LOAD_CURRENT_USER, LOAD_USERS, SET_USER_AVAILABLE_FLAG} from "../actions/userListActions";
+import {LOAD_CURRENT_USER, LOAD_USERS, LOGOUT_CURRENT_USER, SET_USER_AVAILABLE_FLAG} from "../actions/userListActions";
 
 const initialState = {
-    currentUserName: "",
+    currentUser: {
+        id: "",
+        userName: "",
+        firstName: "",
+        lastName: "",
+        dob: new Date()
+    },
     allUsers: []
 };
 
@@ -20,7 +26,7 @@ const userListReducer = (state = initialState, action) => {
         case LOAD_CURRENT_USER:
             return {
                 ...state,
-                currentUserName: action.payload
+                currentUser: action.payload
             };
         case SET_USER_AVAILABLE_FLAG:
             const {userName, isOnline} = action.payload;
@@ -31,12 +37,26 @@ const userListReducer = (state = initialState, action) => {
             }
             const updatedUser = {...allUsers[index], isOnline};
             const updatedAllUsers = [
-                {...allUsers[0], isOnline: allUsers.slice(1).some(u => u.isOnline) || updatedUser.isOnline},
-                ...allUsers.slice(1, index),
+                ...allUsers.slice(0, index),
                 updatedUser,
                 ...allUsers.slice(index + 1),
             ];
-            return {...state, allUsers: updatedAllUsers};
+            const isAnyoneOnline = updatedAllUsers.slice(1).some(u => u.isOnline);
+            const updatedAllUserItem = {...updatedAllUsers[0], isOnline: isAnyoneOnline};
+
+            return {...state, allUsers: [updatedAllUserItem, ...updatedAllUsers.slice(1)]};
+        case LOGOUT_CURRENT_USER:
+            return {
+                ...state,
+                currentUser: {
+                    id: "",
+                    userName: "",
+                    firstName: "",
+                    lastName: "",
+                    dob: new Date()
+                },
+                allUsers: []
+            }
         default:
             return state;
     }

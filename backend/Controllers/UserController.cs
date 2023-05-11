@@ -72,22 +72,15 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("Chat")]
-    public async Task<List<MessageUser>> GetChatUserList()
+    public async Task<List<ChatUserDto>> GetChatUserList()
     {
         var allUsers = await _userService.GetAsync();
         var allConnectedUserNames = ChatHub.ConnectionMap.Select(pair=>pair.Value.userName);
         var connectedUserSet = new HashSet<string>(allConnectedUserNames);
 
-        var disconnectedUsers = allUsers
-            .Where(user => !connectedUserSet.Contains(user.UserName))
-            .Select(user => new MessageUser(user.UserName, DateTime.MinValue, false))
+        return allUsers.Select(user => 
+            new ChatUserDto(user.UserName, user.FirstName, user.LastName, DateTime.Now, 
+                connectedUserSet.Contains(user.UserName)))
             .ToList();
-
-        var allConnectedUsers = ChatHub.ConnectionMap.Values
-            .Concat(disconnectedUsers)
-            .ToList();
-
-        return allConnectedUsers;
-
     }
 }

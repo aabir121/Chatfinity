@@ -1,70 +1,35 @@
 import React, {useEffect, useState} from "react";
 import "../../styles/Chat/ChatUserList.css";
-import {UserDataService} from "../../services/UserDataService";
-import {useDispatch, useSelector} from "react-redux";
-import {loadUsers} from "../../actions/userListActions";
-import {setChatWindowParams, setChatWindowParticipants, setChatWindowType} from "../../actions/chatWindowActions";
+import ChatUserCard from "./ChatUserCard";
 
-function ChatUserList() {
-    const dispatch = useDispatch();
-    const [allUsers, setAllUsers] = useState([]);
-    const currUserName = useSelector((state) => state.userList.currentUserName);
-    const userList = useSelector((state) => state.userList.allUsers);
-    const {chatType} = useSelector(state => ({
-        chatType: state.chatWindow.chatType
-    }));
-
+function ChatUserList({allUsers, onUserClick}) {
+    const [onlineCountText, setOnlineCountText] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
-        if (!currUserName) {
-            return;
-        }
+        const onlineCount = allUsers.slice(1).filter(u => u.isOnline).length;
+        setOnlineCountText(`${onlineCount}/${Math.max(allUsers.length - 1, 0)}`);
+    }, [allUsers]);
 
-        if (!!userList.length) {
-            setAllUsers(userList);
-        } else {
-            UserDataService.getAllUsers()
-                .then((data) => {
-                    const userList = [
-                        {
-                            userName: "All",
-                            joinTime: Date.now(),
-                            isOnline: false,
-                            isSelected: true
-                        },
-                        ...data.filter(u => u.userName !== currUserName)];
-                    setAllUsers(userList);
-                    dispatch(loadUsers(userList));
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        }
-    }, [currUserName, userList]);
-
-    const onUserClick = (currIdx) => {
-        const copyList = [...allUsers];
-        copyList.find(u => u.isSelected).isSelected = false;
-        copyList[currIdx].isSelected = true;
-        setAllUsers([...copyList]);
-
-        const newType = chatType === "private" && currIdx === 0 ? "public" : "private";
-        const participants = [currUserName, copyList[currIdx].userName];
-        dispatch(setChatWindowParams(newType, participants));
+    const onSearchChange = (event) => {
+        setSearchQuery(event.target.value);
     };
 
+    const filteredList = allUsers.filter(u => !searchQuery || u.fullName.toLowerCase().includes(searchQuery.toLowerCase()));
+
     return (
-        <div className="chat-user-list">
-            <h2 className="user-list-header">Online Users:</h2>
-            <div className="user-list">
-                {allUsers.map((user, index) => (
-                    <div className={`user-list-item ${user.isSelected ? 'selected' : ''}`}
-                         onClick={(user) => onUserClick(index)} key={index}>
-                        <div className="user-list-name">{user.userName}</div>
-                        <div className={`user-list-status-container ${user.isOnline ? 'online' : 'offline'}`}></div>
-                    </div>
-                ))}
+        <div className="user-list">
+            <div className="search-bar">
+                <input type="text" onChange={onSearchChange} value={searchQuery} placeholder="Search for users..."/>
             </div>
+            <div className="online-count">
+                <span className="count">{onlineCountText}</span> Users online
+            </div>
+            <ul>
+                {filteredList.map((user, index) => (
+                    <ChatUserCard user={user} index={index} onItemClick={onUserClick}></ChatUserCard>
+                ))}
+            </ul>
         </div>
     );
 }

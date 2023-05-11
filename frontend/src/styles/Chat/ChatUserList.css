@@ -1,64 +1,54 @@
-.chat-user-list {
-    display: flex;
-    flex: 1;
-    background-color: white;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    flex-direction: column;
-}
-
-.user-list-header {
-    display: flex;
-    align-items: center;
-    height: 60px;
-    padding: 0 20px;
-    background-color: #f7f7f7;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-}
-
 .user-list {
-}
-
-.user-list-item {
-    padding: 16px;
-    font-size: 15px;
-    border-bottom: 1px solid #e0e0e0;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
     display: flex;
-    align-content: center;
+    padding: 15px 0;
+    flex-direction: column;
+    height: calc(100% - 71px);
 }
 
-.user-list-item:hover {
-    background-color: #f4f4f4;
+.user-list .search-bar {
+    padding: 0 15px;
 }
 
-.user-list-item.selected {
-    background: rgba(161,201,255,0.2);
+.user-list .search-bar input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 20px;
+    border: none;
+    background-color: #e4e6eb;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
 }
 
-.user-list-item.selected:hover {
-    background: rgba(161,201,255,0.5);
+.user-list .online-count {
+    font-size: 14px;
+    color: #65676b;
+    margin-bottom: 15px;
+    padding: 0 15px;
 }
 
-.user-list-name {
-    flex: 5;
+.user-list .online-count .count {
+    font-weight: 600;
 }
 
-.user-list-status-container {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin: auto;
+.user-list ul {
+    list-style: none;
+    padding: 0 15px;
+    margin: 0;
+    flex-grow: 1;
+    overflow-y: auto;
 }
 
-.user-list-status-container.online {
-    background: rgb(49, 162, 76);
+.user-list ul::-webkit-scrollbar {
+    width: 5px; /* Set the width of the scrollbar */
+    height: 8px; /* Set the height of the scrollbar */
 }
 
-.user-list-status-container.offline {
-    background: rgba(128, 128, 128, 0.7);
+.user-list ul::-webkit-scrollbar-track {
+    background-color: #f5f5f5; /* Set the background color of the scrollbar track */
+}
+
+.user-list ul::-webkit-scrollbar-thumb {
+    background-color: #555; /* Set the background color of the scrollbar thumb */
+    border-radius: 5px; /* Round the edges of the scrollbar thumb */
 }

@@ -1,0 +1,56 @@
+.user-list-card li {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.user-list-card li:hover {
+    background-color: #f5f5f5;
+}
+
+.user-list-card .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ddd;
+    margin-right: 10px;
+}
+
+.user-list-card .user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-list-card .full-name {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.user-list-card .last-seen {
+    font-size: 14px;
+    color: #65676b;
+}
+
+.user-list-card .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: auto;
+}
+
+.user-list-card .selected {
+    background-color: antiquewhite;
+}
+
+.user-list-card .status-dot.online {
+    background-color: #4caf50;
+}
+
+.user-list-card .status-dot.offline {
+    background-color: #ccc;
+}

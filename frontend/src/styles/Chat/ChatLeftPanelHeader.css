@@ -1,0 +1,39 @@
+.left-panel-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.left-panel-header .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ddd;
+    margin-right: 10px;
+}
+
+.left-panel-header .user-info {
+    display: flex;
+    flex: 1;
+}
+
+.left-panel-header .full-name {
+    font-size: 16px;
+    font-weight: 600;
+    flex: 1;
+}
+
+.left-panel-header .logout-btn {
+    color: #1877f2;
+    font-size: 25px;
+    font-weight: 600;
+    margin: auto;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.left-panel-header .logout-btn:hover {
+    opacity: 0.7;
+}

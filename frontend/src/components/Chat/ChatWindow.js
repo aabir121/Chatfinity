@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import ChatInput from "./ChatInput";
 import ChatMessage from "./ChatMessage";
 import ChatService from "../../services/ChatService";
-import ChatUserList from "./ChatUserList";
+import ChatLeftPanel from "./ChatLeftPanel";
 import LogInWindow from "../Modal/LogInWindow";
 import "../../styles/Chat/ChatWindow.css";
 import "../../styles/Modal/Modal.css";
@@ -19,6 +19,7 @@ function ChatWindow() {
     const dispatch = useDispatch();
     const chatType = useSelector(state => state.chatWindow.chatType);
     const participants = useSelector((state) => state.chatWindow.participants);
+    const currUser = useSelector((state) => state.userList.currentUser);
 
     const openModal = () => {
         setShowLoginModal(true);
@@ -36,7 +37,7 @@ function ChatWindow() {
     const onLoginModalClose = (userData) => {
         const currName = userData.userName;
         dispatch(showToast('Success', 'Login Successful'));
-        dispatch(loadCurrentUser(currName));
+        dispatch(loadCurrentUser(userData));
 
         setUserName(currName);
         setShowLoginModal(false);
@@ -55,7 +56,7 @@ function ChatWindow() {
             return;
         }
 
-        getAllMessages(userName).then(()=>{
+        getAllMessages(userName).then(() => {
             sendMsgHandler();
             typingStatusHandler();
         });
@@ -74,6 +75,15 @@ function ChatWindow() {
             ChatService.stop();
         };
     }, []);
+
+    useEffect(() => {
+        if (!currUser || !currUser.userName) {
+            ChatService.stop();
+            setAllMessage([]);
+            setUserName("");
+            openModal();
+        }
+    }, [currUser])
 
     const typingStatusHandler = () => {
         ChatService.setOnTypingStatusHandler((userName, type, participantsArr, isTyping) => {
@@ -165,7 +175,7 @@ function ChatWindow() {
     return (
         <div className="main-window">
             <LogInWindow show={showLoginModal} handleClose={onLoginModalClose}></LogInWindow>
-            <ChatUserList></ChatUserList>
+            <ChatLeftPanel></ChatLeftPanel>
             <div className="chat-window">
                 <div className="chat-messages">
                     {allMessage.map((obj, index) => (

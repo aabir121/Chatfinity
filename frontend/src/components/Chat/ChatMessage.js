@@ -7,7 +7,7 @@ import {useSelector} from "react-redux";
 import {PulseLoader} from "react-spinners";
 
 function ChatMessage({messageObj, prevMessageObj}) {
-    const currUserName = useSelector((state)=>state.userList.currentUserName);
+    const currUserName = useSelector((state) => state.userList.currentUser?.userName);
     const {sender, content, type, timestamp} = messageObj;
     const {sender: prevSender, type: prevType} = prevMessageObj || {};
     const sent = type === "message" && currUserName === sender;
@@ -16,7 +16,7 @@ function ChatMessage({messageObj, prevMessageObj}) {
     const hideName = ['message', 'typing'].includes(prevType) && prevSender === sender;
     const containerRef = useRef(null);
     const tooltipContent = <Tooltip>{formatChatTimestamp(timestamp)}</Tooltip>;
-    const isTypingContent = <PulseLoader size={10} />;
+    const isTypingContent = <PulseLoader size={10}/>;
 
     return (
         <div ref={containerRef}>
