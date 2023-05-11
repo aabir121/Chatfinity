@@ -2,13 +2,17 @@ import "../../styles/Chat/ChatLeftPanelHeader.css";
 import {FiLogOut} from 'react-icons/fi';
 import {useDispatch} from "react-redux";
 import {logoutCurrentUser} from "../../actions/userListActions";
+import {UserDataService} from "../../services/UserDataService";
 
 function ChatLeftPanelHeader({user}) {
     const dispatch = useDispatch();
     const fullName = `${user.firstName} ${user.lastName}`;
 
     const logout = () => {
-        dispatch(logoutCurrentUser(user));
+        UserDataService.logoutUser(user.userName)
+            .then(() => {
+                dispatch(logoutCurrentUser(user));
+            });
     };
 
     return (

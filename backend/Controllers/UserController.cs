@@ -1,4 +1,5 @@
 using backend.DTOs;
+using backend.ErrorManagement.Exceptions;
 using backend.Hubs;
 using backend.Models;
 using backend.Services;
@@ -38,6 +39,19 @@ public class UserController : ControllerBase
     {
         var user = await _userService.AuthAndGetUser(userDto);
         return user;
+    }
+    
+    [HttpPost("Logout")]
+    public async Task<bool> Logout(LogoutUserDto logoutUser)
+    {
+        if (string.IsNullOrWhiteSpace(logoutUser.UserName))
+        {
+            throw new BadRequestException("Username is mandatory");
+        }
+        
+        await _userService.LogoutUser(logoutUser);
+
+        return true;
     }
 
     [HttpPost]
@@ -79,7 +93,7 @@ public class UserController : ControllerBase
         var connectedUserSet = new HashSet<string>(allConnectedUserNames);
 
         return allUsers.Select(user => 
-            new ChatUserDto(user.UserName, user.FirstName, user.LastName, DateTime.Now, 
+            new ChatUserDto(user.UserName, user.FirstName, user.LastName, user.LastOnlineTime, 
                 connectedUserSet.Contains(user.UserName)))
             .ToList();
     }

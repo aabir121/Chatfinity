@@ -19,6 +19,8 @@ public class User
 
     [BsonElement("pwd")] public string Password { get; set; }
     
+    [BsonElement("lastOnlineTime")] public DateTime? LastOnlineTime { get; set; }
+    
     public User(string? id, string userName, string firstName, string lastName, DateTime dateOfBirth, string password)
     {
         Id = id;

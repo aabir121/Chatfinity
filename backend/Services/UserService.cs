@@ -44,6 +44,19 @@ public class UserService : IUserService
         return user;
     }
 
+    public async Task LogoutUser(LogoutUserDto logoutUserDto)
+    {
+        var user = await GetAsync(logoutUserDto.UserName);
+        if (user is null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        user.LastOnlineTime = DateTime.Now;
+
+        await UpdateOneAsync(logoutUserDto.UserName, user);
+    }
+
     public async Task CreateAsync(User user)
     {
         var userInDb = await _userRepository.FindUserByUserName(user.UserName);

@@ -27,7 +27,7 @@ function ChatUserList({allUsers, onUserClick}) {
             </div>
             <ul>
                 {filteredList.map((user, index) => (
-                    <ChatUserCard user={user} index={index} onItemClick={onUserClick}></ChatUserCard>
+                    <ChatUserCard key={index} user={user} index={index} onItemClick={onUserClick}></ChatUserCard>
                 ))}
             </ul>
         </div>

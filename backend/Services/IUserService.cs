@@ -9,6 +9,7 @@ public interface IUserService
     Task<List<User>> GetAsync();
     Task<User?> GetAsync(string userName);
     Task<User?> AuthAndGetUser(UserDto userDto);
+    Task LogoutUser(LogoutUserDto logoutUserDto);
     Task CreateAsync(User user);
     Task UpdateOneAsync(string userName, User userToUpdate);
     Task RemoveAsync(string userName);

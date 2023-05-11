@@ -10,5 +10,9 @@ export const UserDataService={
 
     loginUser : (userBody) => {
         return ApiService.postData("/User/Login", userBody);
+    },
+
+    logoutUser: (userName) => {
+      return ApiService.postData("/User/Logout", {userName: userName});
     }
 };
