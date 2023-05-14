@@ -5,7 +5,6 @@ using backend.Interfaces;
 using backend.Models;
 using backend.Services;
 using Microsoft.AspNetCore.SignalR;
-using MongoDB.Bson;
 
 namespace backend.Hubs;
 

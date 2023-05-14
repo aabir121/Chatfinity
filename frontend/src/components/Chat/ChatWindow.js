@@ -12,6 +12,7 @@ import {showToast} from "../../actions/toastActions";
 import {loadCurrentUser, setUserAvailableFLag} from "../../actions/userListActions";
 import {v4 as uuidv4} from 'uuid';
 import {setChatWindowParams} from "../../actions/chatWindowActions";
+import ChatWindowHeader from "./ChatWindowHeader";
 
 function ChatWindow() {
     const [allMessage, setAllMessage] = useState([]);
@@ -194,6 +195,7 @@ function ChatWindow() {
             <LogInWindow show={showLoginModal} handleClose={onLoginModalClose}></LogInWindow>
             <ChatLeftPanel></ChatLeftPanel>
             <div className="chat-window">
+                <ChatWindowHeader></ChatWindowHeader>
                 <div className="chat-messages">
                     {allMessage.map((obj, index) => (
                         <div ref={index === allMessage.length - 1 ? latestMsgRef : null} key={obj.timestamp}>

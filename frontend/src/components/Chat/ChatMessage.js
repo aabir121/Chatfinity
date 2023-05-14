@@ -8,7 +8,7 @@ import {PulseLoader} from "react-spinners";
 
 function ChatMessage({messageObj, prevMessageObj}) {
     const currUserName = useSelector((state) => state.userList.currentUser?.userName);
-    const {sender, content, type, timestamp, isPending} = messageObj;
+    const {id, sender, content, type, timestamp, isPending} = messageObj;
     const {sender: prevSender, type: prevType} = prevMessageObj || {};
     const sent = type === "message" && currUserName === sender;
     const isStatus = type === "status";
@@ -20,7 +20,7 @@ function ChatMessage({messageObj, prevMessageObj}) {
     const isPendingClass = isPending ? "pending" : "";
 
     return (
-        <div ref={containerRef} key={timestamp}>
+        <div ref={containerRef} key={id}>
             {isStatus ? (
                 <div className="status-text">
                     <span>{content}</span>
