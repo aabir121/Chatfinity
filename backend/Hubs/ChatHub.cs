@@ -1,6 +1,9 @@
 using System.Collections.Concurrent;
+using backend.Commands;
 using backend.DTOs;
+using backend.Interfaces;
 using backend.Models;
+using backend.Services;
 using Microsoft.AspNetCore.SignalR;
 using MongoDB.Bson;
 
@@ -9,6 +12,17 @@ namespace backend.Hubs;
 public class ChatHub : Hub<IChatClient>
 {
     public static readonly ConcurrentDictionary<string, MessageUser> ConnectionMap = new();
+
+    private readonly ICommandExecutor _commandExecutor;
+    private readonly IHubContext<ChatHub, IChatClient> _hubContext;
+    private readonly IChatService _chatService;
+
+    public ChatHub(ICommandExecutor executor, IHubContext<ChatHub, IChatClient> hubContext, IChatService chatService)
+    {
+        _commandExecutor = executor;
+        _hubContext = hubContext;
+        _chatService = chatService;
+    }
 
     public override async Task OnConnectedAsync()
     {
@@ -22,9 +36,8 @@ public class ChatHub : Hub<IChatClient>
 
     public async Task SendMessage(CreateMessageDto msgBody)
     {
-        msgBody.Id = ObjectId.GenerateNewId().ToString();
-        msgBody.TimeStamp = DateTime.Now;
-        await Clients.Others.ReceiveMessage(msgBody);
+        var command = new SendMessageCommand(_chatService, _hubContext, msgBody);
+        await _commandExecutor.ExecuteAsync(command);
     }
 
     public async Task AnnounceUser(MessageUser user, bool joined)

@@ -36,7 +36,6 @@ function ChatLeftPanel() {
                         },
                         ...data.filter(u => u.userName !== currentUser.userName)];
                     setAllUsers(userList);
-                    console.log(userList);
                     dispatch(loadUsers(userList));
                 })
                 .catch((error) => {

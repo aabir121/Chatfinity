@@ -1,7 +1,9 @@
+using backend.Commands;
 using backend.Hubs;
 using backend.Models;
 using backend.Services;
 using backend.ErrorManagement.Configurations;
+using backend.Interfaces;
 using backend.Repositories;
 using Microsoft.Extensions.Options;
 
@@ -11,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<MongoDbConfig>(builder.Configuration.GetSection(nameof(MongoDbConfig)));
 builder.Services.AddSingleton<IMongoDbConfig>(provider =>
     provider.GetRequiredService<IOptions<MongoDbConfig>>().Value);
+
+builder.Services.AddSingleton<ICommandExecutor, CommandExecutor>();
 
 // Register repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

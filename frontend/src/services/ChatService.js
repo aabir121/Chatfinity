@@ -8,6 +8,7 @@ class _ChatService {
     onConnected = null;
     onSendMessage = null;
     onTypingStatus = null;
+    isConnected = false;
 
     initialize = (userName) => {
         this.connection = new signalR.HubConnectionBuilder()
@@ -26,6 +27,10 @@ class _ChatService {
         this.connection.on(SignalRFunctionNames.TYPING_STATUS, (user, type, participants, isTyping) => {
             this.onTypingStatus?.(user, type, participants, isTyping);
         });
+
+        this.connection.onclose(() => {
+            this.isConnected = false;
+        });
     }
 
     start = (userName) => {
@@ -33,6 +38,7 @@ class _ChatService {
             return this.connection.start()
                 .then(() => {
                     console.log("SignalR Connected");
+                    this.isConnected = true;
                     this.onConnected?.();
                 })
                 .catch((err) => {
@@ -46,6 +52,7 @@ class _ChatService {
 
     stop = () => {
         this.connection?.stop();
+        this.isConnected = false;
     }
 
     setReceiveMessageHandler = (handler) => {
@@ -65,13 +72,15 @@ class _ChatService {
     }
 
     invoke = (functionName, callback, ...args) => {
-        this.connection?.invoke(functionName, ...args)
-            .then(() => {
-                callback?.(...args);
-            })
-            .catch((err) => {
-                console.log("SignalR Invocation Error", err);
-            });
+        if (this.isConnected) {
+            this.connection?.invoke(functionName, ...args)
+                .then(() => {
+                    callback?.(...args);
+                })
+                .catch((err) => {
+                    console.log("SignalR Invocation Error", err);
+                });
+        }
     }
 
     sendMessage = (msgBody) => {

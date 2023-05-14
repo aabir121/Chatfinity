@@ -44,7 +44,7 @@
 }
 
 .user-list-card .selected {
-    background-color: antiquewhite;
+    background-color: rgba(45, 136, 255, 0.1);
 }
 
 .user-list-card .status-dot.online {

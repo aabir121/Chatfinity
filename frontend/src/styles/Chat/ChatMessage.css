@@ -44,6 +44,10 @@
     align-self: flex-start;
 }
 
+.message-content.pending {
+    opacity: 0.2;
+}
+
 /* Received message styles */
 .message-sent .message-content {
     background-color: #007aff;

@@ -8,7 +8,7 @@ import {PulseLoader} from "react-spinners";
 
 function ChatMessage({messageObj, prevMessageObj}) {
     const currUserName = useSelector((state) => state.userList.currentUser?.userName);
-    const {sender, content, type, timestamp} = messageObj;
+    const {sender, content, type, timestamp, isPending} = messageObj;
     const {sender: prevSender, type: prevType} = prevMessageObj || {};
     const sent = type === "message" && currUserName === sender;
     const isStatus = type === "status";
@@ -17,9 +17,10 @@ function ChatMessage({messageObj, prevMessageObj}) {
     const containerRef = useRef(null);
     const tooltipContent = <Tooltip>{formatChatTimestamp(timestamp)}</Tooltip>;
     const isTypingContent = <PulseLoader size={10}/>;
+    const isPendingClass = isPending ? "pending" : "";
 
     return (
-        <div ref={containerRef}>
+        <div ref={containerRef} key={timestamp}>
             {isStatus ? (
                 <div className="status-text">
                     <span>{content}</span>
@@ -30,7 +31,8 @@ function ChatMessage({messageObj, prevMessageObj}) {
                     <OverlayTrigger container={containerRef} delay={{show: 500, hide: 400}}
                                     overlay={tooltipContent}
                                     placement="auto">
-                        <div className="message-content">{type === 'typing' ? isTypingContent : content}</div>
+                        <div className={`message-content ${isPendingClass}`}>
+                            {type === 'typing' ? isTypingContent : content}</div>
                     </OverlayTrigger>
                 </div>
             )}

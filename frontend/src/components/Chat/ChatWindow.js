@@ -10,6 +10,8 @@ import {MessageDataService} from "../../services/MessageDataService";
 import {useDispatch, useSelector} from "react-redux";
 import {showToast} from "../../actions/toastActions";
 import {loadCurrentUser, setUserAvailableFLag} from "../../actions/userListActions";
+import {v4 as uuidv4} from 'uuid';
+import {setChatWindowParams} from "../../actions/chatWindowActions";
 
 function ChatWindow() {
     const [allMessage, setAllMessage] = useState([]);
@@ -20,6 +22,8 @@ function ChatWindow() {
     const chatType = useSelector(state => state.chatWindow.chatType);
     const participants = useSelector((state) => state.chatWindow.participants);
     const currUser = useSelector((state) => state.userList.currentUser);
+    const participantsRef = useRef(participants);
+    participantsRef.current = participants;
 
     const openModal = () => {
         setShowLoginModal(true);
@@ -41,12 +45,12 @@ function ChatWindow() {
 
         setUserName(currName);
         setShowLoginModal(false);
+        dispatch(setChatWindowParams("public", [currName]));
 
         ChatService.start(currName)
             .then(() => getAllMessages(currName))
             .then(_ => {
                 sendMsgHandler();
-                receiveMsgHandler();
                 announceUserHandler();
             });
     };
@@ -56,10 +60,13 @@ function ChatWindow() {
             return;
         }
 
-        getAllMessages(userName).then(() => {
-            sendMsgHandler();
-            typingStatusHandler();
-        });
+        getAllMessages(userName)
+            .then(() => {
+                announceUserHandler();
+                sendMsgHandler();
+                receiveMsgHandler();
+                typingStatusHandler();
+            });
     }, [chatType, participants]);
 
     useEffect(() => {
@@ -107,6 +114,7 @@ function ChatWindow() {
     };
     const getSendMsgBody = (msg) => {
         const msgBody = {
+            id: uuidv4(),
             type: chatType,
             sender: userName,
             content: msg,
@@ -120,28 +128,37 @@ function ChatWindow() {
 
     const sendMsgHandler = () => {
         ChatService.setSendMessageHandler((message) => {
-            MessageDataService.createMessage({...message})
-                .then((data) => {
-                    addMsgResponseToAllResponse(data);
-                });
+            addMsgResponseToAllResponse(message, true);
         });
     };
 
-    const addMsgResponseToAllResponse = (message) => {
-        setAllMessage((prevMsg) => [...prevMsg, {
-            ...message,
-            type: "message",
-        }]);
+    const addMsgResponseToAllResponse = (message, isPending) => {
+        const sanitizedMsg = {...message, type: "message", isPending: isPending};
+
+        setAllMessage(prevMsgs => {
+            const pendingMsgIndex = prevMsgs.findIndex(msg => msg.isPending && msg.id === message.id);
+
+            if (pendingMsgIndex !== -1) {
+                const updatedMsgs = [...prevMsgs];
+                updatedMsgs[pendingMsgIndex] = sanitizedMsg;
+                return updatedMsgs;
+            } else {
+                return [...prevMsgs, sanitizedMsg];
+            }
+        });
     };
 
     const receiveMsgHandler = () => {
         ChatService.setReceiveMessageHandler((message) => {
-            if (message.type !== chatType || !participants.includes(message.sender)
-                || (message.type === "private" && !participants.includes(message.receiver))) {
+            if (
+                message.type !== chatType ||
+                !participantsRef.current.includes(message.sender) ||
+                (message.type === "private" && !participantsRef.current.includes(message.receiver))
+            ) {
                 return;
             }
 
-            addMsgResponseToAllResponse(message);
+            addMsgResponseToAllResponse(message, false);
         });
     };
 
