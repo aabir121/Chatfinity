@@ -22,7 +22,6 @@ function ChatWindowHeader({receiver}) {
     }, [receiverInfo])
 
     const populateLastOnline = () => {
-        debugger;
         setLastOnlineText(!receiverInfo.isOnline && !!receiverInfo.lastOnline ? formatTimeAgo(receiverInfo.lastOnline) : "");
     }
 

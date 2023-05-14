@@ -27,6 +27,16 @@
     margin-bottom: 10px;
 }
 
+.message .info {
+    padding: 5px;
+    color: grey;
+    font-size: 12px;
+}
+
+.message-sent .info {
+    align-self: flex-end;
+}
+
 /* Sender styles */
 .message-sender {
     font-size: 12px;
@@ -64,7 +74,7 @@
     display: flex;
 }
 
-.status-text > span {
+.status-text>span {
     font-size: 14px;
     margin: auto;
     color: gray;
