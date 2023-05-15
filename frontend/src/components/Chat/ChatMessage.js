@@ -22,7 +22,7 @@ function ChatMessage({ messageObj, prevMessageObj }) {
     const handleMouseEnter = () => {
         const timer = setTimeout(() => {
             setShowMsgInfo(true);
-        }, 1000);
+        }, 500);
         setHoverTimer(timer);
     };
 

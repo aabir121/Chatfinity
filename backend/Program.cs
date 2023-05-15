@@ -15,6 +15,7 @@ builder.Services.AddSingleton<IMongoDbConfig>(provider =>
     provider.GetRequiredService<IOptions<MongoDbConfig>>().Value);
 
 builder.Services.AddSingleton<ICommandExecutor, CommandExecutor>();
+builder.Services.AddSingleton<ConnectionManager>();
 
 // Register repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

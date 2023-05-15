@@ -12,10 +12,12 @@ namespace backend.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly ConnectionManager _connectionManager;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, ConnectionManager connectionManager)
     {
         _userService = userService;
+        _connectionManager = connectionManager;
     }
 
     [HttpGet]
@@ -89,7 +91,7 @@ public class UserController : ControllerBase
     public async Task<List<ChatUserDto>> GetChatUserList()
     {
         var allUsers = await _userService.GetAsync();
-        var allConnectedUserNames = ChatHub.ConnectionMap.Select(pair=>pair.Value.userName);
+        var allConnectedUserNames = _connectionManager.GetAllConnectedUserNames() ?? new List<string?>();
         var connectedUserSet = new HashSet<string>(allConnectedUserNames);
 
         return allUsers.Select(user => 

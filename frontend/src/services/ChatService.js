@@ -20,8 +20,8 @@ class _ChatService {
             this.onReceiveMessage?.(message);
         });
 
-        this.connection.on(SignalRFunctionNames.ANNOUNCE_USER, (user, joined) => {
-            this.onAnnounceUser?.(user, joined);
+        this.connection.on(SignalRFunctionNames.ANNOUNCE_USER, (userName, joined) => {
+            this.onAnnounceUser?.(userName, joined);
         });
 
         this.connection.on(SignalRFunctionNames.TYPING_STATUS, (user, type, participants, isTyping) => {

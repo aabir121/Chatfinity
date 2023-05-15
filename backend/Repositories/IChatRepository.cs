@@ -21,4 +21,6 @@ public interface IChatRepository
 
     // Update message content in private chat based on two participants by id
     Task<bool> UpdateMessageContent(ObjectId chatId, ObjectId messageId, string newContent);
+
+    Task<Message?> GetMessageById(ObjectId chatId, ObjectId messageId);
 }

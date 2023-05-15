@@ -3,6 +3,7 @@ using backend.Enums;
 using backend.ErrorManagement.Exceptions;
 using backend.Models;
 using backend.Repositories;
+using MongoDB.Bson;
 
 namespace backend.Services;
 
@@ -70,6 +71,37 @@ public class ChatService : IChatService
         );
     }
 
+    public async Task<bool> UpdateMessage(string chatId, string messageId, string updatedContent)
+    {
+        if (!ObjectId.TryParse(chatId, out var chatObjectId) || !ObjectId.TryParse(messageId, out var messageObjectId))
+        {
+            return false;
+        }
+
+        return await _chatRepository.UpdateMessageContent(chatObjectId, messageObjectId, updatedContent);
+    }
+
+    public async Task<bool> DeleteMessage(string chatId, string messageId)
+    {
+        if (!ObjectId.TryParse(chatId, out var chatObjectId) || !ObjectId.TryParse(messageId, out var messageObjectId))
+        {
+            return false;
+        }
+
+        return await _chatRepository.DeleteMessageFromChatByIdAsync(chatObjectId, messageObjectId);
+    }
+
+    public async Task<MessageDto?> GetMessageById(string chatId, string messageId)
+    {
+        if (!ObjectId.TryParse(chatId, out var chatObjectId) || !ObjectId.TryParse(messageId, out var messageObjectId))
+        {
+            return null;
+        }
+
+        var message = await _chatRepository.GetMessageById(chatObjectId, messageObjectId);
+
+        return message is null ? null : new MessageDto(message.Id.ToString(), message.Sender, message.Receiver, message.Content, message.Timestamp);
+    }
 
     private static List<MessageDto>? PrepareMsgListFromChat(Chat? chat)
     {

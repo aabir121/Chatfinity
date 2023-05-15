@@ -104,8 +104,16 @@ public class ChatRepository : RepositoryBase<Chat>, IChatRepository
         return result.IsAcknowledged;
     }
 
-    public async Task<Chat> GetChatById(ObjectId chatId)
+    public async Task<Message?> GetMessageById(ObjectId chatId, ObjectId messageId)
     {
-        return await Collection.Find(chat => chat.Id == chatId).FirstOrDefaultAsync();
+        var filter = Builders<Chat>.Filter.Eq(c=>c.Id, chatId);
+        var projection = Builders<Chat>.Projection
+            .ElemMatch(x => x.Messages, Builders<Message>.Filter.Eq(m=>m.Id, messageId));
+
+        var chat = await Collection.Find(filter)
+            .Project<Chat>(projection)
+            .FirstOrDefaultAsync();
+
+        return chat?.Messages?.FirstOrDefault();
     }
 }

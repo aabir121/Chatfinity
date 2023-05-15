@@ -164,11 +164,11 @@ function ChatWindow() {
     };
 
     const announceUserHandler = () => {
-        ChatService.setAnnounceUserHandler((msgUser, joined) => {
-            dispatch(setUserAvailableFLag(msgUser.userName, joined));
+        ChatService.setAnnounceUserHandler((userName, joined) => {
+            dispatch(setUserAvailableFLag(userName, joined));
             setAllMessage((prevMsg) => [...prevMsg, {
-                sender: msgUser.userName,
-                content: `${msgUser.userName} just ${joined ? 'joined' : 'left'} the chat`,
+                sender: userName,
+                content: `${userName} just ${joined ? 'joined' : 'left'} the chat`,
                 type: "status",
                 timestamp: new Date().toISOString()
             }]);
