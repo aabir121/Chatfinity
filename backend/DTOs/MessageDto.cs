@@ -15,13 +15,17 @@ public class MessageDto
     [JsonPropertyName("timestamp")]
     public DateTime? TimeStamp { get; set; }
 
-    public MessageDto(string id, string sender, string receiver, string content, DateTime timeStamp)
+    [JsonPropertyName("isUpdated")]
+    public bool IsUpdated { get; set; } = false;
+
+    public MessageDto(string id, string sender, string receiver, string content, DateTime timeStamp, bool isUpdated)
     {
         Id = id;
         Sender = sender;
         Receiver = receiver;
         Content = content;
         TimeStamp = timeStamp;
+        IsUpdated = isUpdated;
     }
 
     public MessageDto(string sender, string? receiver, string content)
@@ -29,5 +33,6 @@ public class MessageDto
         Sender = sender;
         Receiver = receiver ?? "";
         Content = content;
+        IsUpdated = false;
     }
 }

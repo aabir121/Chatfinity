@@ -15,8 +15,8 @@ const LogInForm = ({errorText, onLoginSuccess, onSignUpClick}) => {
     const dispatch = useDispatch();
 
     const handleInputChange = (e) => {
-        const { id, value } = e.target;
-        setFormData({ ...formData, [id]: value, errorText: '' });
+        const {id, value} = e.target;
+        setFormData({...formData, [id]: value, errorText: ''});
     };
 
     const handleSubmit = (e) => {
@@ -37,11 +37,12 @@ const LogInForm = ({errorText, onLoginSuccess, onSignUpClick}) => {
         });
     }
 
-    return(
+    return (
         <div className="login-form-container">
             <form onSubmit={handleSubmit} className="login-form">
                 <h2>Login</h2>
-                <input type="text" id="username" onChange={handleInputChange} value={formData.username} placeholder="Username"/>
+                <input type="text" id="username" onChange={handleInputChange} value={formData.username}
+                       placeholder="Username"/>
                 <PasswordInput onChange={handleInputChange} passValue={formData.password}></PasswordInput>
                 <span className="error">{formData.errorText}</span>
                 <button type="submit">Login</button>

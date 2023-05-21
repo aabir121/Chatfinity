@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
-import { Button, ButtonGroup, OverlayTrigger, Popover } from "react-bootstrap";
+import {useEffect, useState} from "react";
+import {Button, ButtonGroup, OverlayTrigger, Popover} from "react-bootstrap";
 import {PulseLoader} from "react-spinners";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import { openModal } from "../../actions/confirmModalActions";
-import { useDispatch } from "react-redux";
-import { formatChatTimestamp } from "./Utils";
+import {FaEdit, FaTrash} from "react-icons/fa";
+import {openModal} from "../../actions/confirmModalActions";
+import {useDispatch} from "react-redux";
+import {formatChatTimestamp} from "./Utils";
 
 import "../../styles/Chat/RegularMessage.css";
 
-function RegularMessage({ messageObj, sent, handleMessageEditClick, handleMessageDeleteConfirm }) {
-    const { id, isPending, type, content, timestamp } = messageObj;
+function RegularMessage({messageObj, sent, handleMessageEditClick, handleMessageDeleteConfirm}) {
+    const {id, isPending, type, content, timestamp, isUpdated} = messageObj;
     const isPendingClass = isPending ? "pending" : "";
-    const isTypingContent = <PulseLoader size={10} />;
+    const isTypingContent = <PulseLoader size={10}/>;
     const dispatch = useDispatch();
 
     const [showMsgInfo, setShowMsgInfo] = useState(false);
@@ -23,7 +23,8 @@ function RegularMessage({ messageObj, sent, handleMessageEditClick, handleMessag
                 title: "Delete Message",
                 body: "Are you sure you want to delete this message?",
                 positiveAction: onConfirm,
-                negativeAction: () => {},
+                negativeAction: () => {
+                },
                 positiveButtonTitle: "Delete",
                 negativeButtonTitle: "Cancel",
             })
@@ -58,10 +59,10 @@ function RegularMessage({ messageObj, sent, handleMessageEditClick, handleMessag
             <Popover.Body id={`message-options-popover-content-${id}`}>
                 <ButtonGroup vertical>
                     <Button variant="light" onClick={onMessageEditClick}>
-                        <FaEdit />
+                        <FaEdit/>
                     </Button>
                     <Button variant="light" onClick={onMessageDeleteClick}>
-                        <FaTrash />
+                        <FaTrash/>
                     </Button>
                 </ButtonGroup>
             </Popover.Body>
@@ -77,7 +78,7 @@ function RegularMessage({ messageObj, sent, handleMessageEditClick, handleMessag
     return (
         <>
             <div
-                className={`message-content ${isPendingClass}`}
+                className={`message-content ${isPendingClass} ${isUpdated ? "updated" : ""}`}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >

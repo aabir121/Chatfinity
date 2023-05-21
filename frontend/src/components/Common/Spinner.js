@@ -1,5 +1,5 @@
-import { css } from "@emotion/react";
-import { PulseLoader } from "react-spinners";
+import {css} from "@emotion/react";
+import {PulseLoader} from "react-spinners";
 import '../../styles/Modal/Spinner.css';
 
 const override = css`
@@ -11,7 +11,7 @@ const override = css`
 export const Spinner = () => {
     return (
         <div className="spinner-container">
-            <PulseLoader color={"#007bff"} css={override} size={15} />
+            <PulseLoader color={"#007bff"} css={override} size={15}/>
         </div>
     );
 };

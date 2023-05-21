@@ -5,7 +5,7 @@ export const MessageDataService = {
         return ApiService.getData(`/Chat/Private/${participants[0]}/${participants[1]}`);
     },
 
-    getPublicChat : () => {
+    getPublicChat: () => {
         return ApiService.getData("/Chat/Public");
     }
 }

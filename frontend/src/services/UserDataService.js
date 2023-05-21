@@ -1,18 +1,19 @@
 import {ApiService} from "./ApiService";
-export const UserDataService={
-    getAllUsers : () => {
+
+export const UserDataService = {
+    getAllUsers: () => {
         return ApiService.getData("/User/Chat");
     },
 
-    createNewUser : (userData) => {
+    createNewUser: (userData) => {
         return ApiService.postData("/User", userData);
     },
 
-    loginUser : (userBody) => {
+    loginUser: (userBody) => {
         return ApiService.postData("/User/Login", userBody);
     },
 
     logoutUser: (userName) => {
-      return ApiService.postData("/User/Logout", {userName: userName});
+        return ApiService.postData("/User/Logout", {userName: userName});
     }
 };

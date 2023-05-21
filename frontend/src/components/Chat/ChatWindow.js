@@ -221,7 +221,7 @@ function ChatWindow() {
             setAllMessage((prevMessages) => {
                 const updatedMessages = prevMessages.map((message) => {
                     if (message.id === updatedMsg.id) {
-                        return {...message, content: updatedMsg.content};
+                        return {...message, content: updatedMsg.content, isUpdated: true};
                     }
                     return message;
                 });
@@ -239,7 +239,7 @@ function ChatWindow() {
                 <div className="chat-messages">
                     {allMessage.map((obj, index) => (
                         <div ref={index === allMessage.length - 1 ? latestMsgRef : null} key={obj.timestamp}>
-                            <ChatMessage prevMessageObj={index > 1 ? allMessage[index - 1] : null}
+                            <ChatMessage key={index} prevMessageObj={index > 1 ? allMessage[index - 1] : null}
                                          messageObj={obj} onEdit={handleMessageEdit} onDelete={handleMessageDelete}>
                             </ChatMessage>
                         </div>

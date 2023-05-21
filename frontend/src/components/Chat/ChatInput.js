@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import '../../styles/Chat/ChatInput.css';
 
@@ -37,7 +37,7 @@ function ChatInput(props) {
         setIsTyping(false);
         props.setTypingStatus(false);
 
-        setTimeout(()=>{
+        setTimeout(() => {
             props.sendMessage(message.trim());
             setMessage('');
         });
@@ -46,7 +46,7 @@ function ChatInput(props) {
     return (
         <div className="chat-input">
             <input type="text" placeholder="Type your message..." onKeyDown={handleKeyPress}
-                   value={message} onChange={(e) => setMessage(e.target.value)} />
+                   value={message} onChange={(e) => setMessage(e.target.value)}/>
             <button onClick={sendMessage} className="send-button">Send</button>
         </div>
     );

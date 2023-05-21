@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 import toastReducer from "../reducers/toastReducers";
 import loaderReducer from "../reducers/loaderReducers";
 import userListReducer from "../reducers/userListReducers";

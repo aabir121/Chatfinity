@@ -67,7 +67,8 @@ public class ChatService : IChatService
             createdMessage.Sender,
             createdMessage.Receiver ?? "",
             createdMessage.Content,
-            createdMessage.Timestamp
+            createdMessage.Timestamp,
+            false
         );
     }
 
@@ -100,7 +101,8 @@ public class ChatService : IChatService
 
         var message = await _chatRepository.GetMessageById(chatObjectId, messageObjectId);
 
-        return message is null ? null : new MessageDto(message.Id.ToString(), message.Sender, message.Receiver, message.Content, message.Timestamp);
+        return message is null ? null : new MessageDto(message.Id.ToString(), message.Sender, message.Receiver, 
+            message.Content, message.Timestamp, message.IsUpdated);
     }
 
     private static ChatDto? PrepareChatDto(Chat chat)
@@ -111,7 +113,8 @@ public class ChatService : IChatService
                 msg.Sender,
                 msg.Receiver ?? "",
                 msg.Content,
-                msg.Timestamp))
+                msg.Timestamp,
+                msg.IsUpdated))
             .ToList();
 
         return new ChatDto(chat.Id.ToString(), chat.Type, messages);

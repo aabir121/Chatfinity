@@ -5,3 +5,13 @@
     position: relative;
 }
 
+.message .info {
+    padding: 5px;
+    color: grey;
+    font-size: 12px;
+}
+
+.message-sent .info {
+    align-self: flex-end;
+}
+

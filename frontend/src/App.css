@@ -1,6 +1,7 @@
 /* Chat window styles */
 .App {
   position: relative;
+  font-family: 'Nunito', sans-serif;
 }
 
 .main-window {

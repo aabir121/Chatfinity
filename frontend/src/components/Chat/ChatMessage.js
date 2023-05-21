@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import '../../styles/Chat/ChatMessage.css';
 import {useSelector} from 'react-redux';
 import StatusMessage from "./StatusMessage";

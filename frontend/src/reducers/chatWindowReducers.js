@@ -9,9 +9,9 @@ const chatWindowReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_CHAT_WINDOW_PARAMS:
             return {
-              ...state,
-              chatType: action.payload.chatType,
-              participants: action.payload.participants
+                ...state,
+                chatType: action.payload.chatType,
+                participants: action.payload.participants
             };
         default:
             return state;

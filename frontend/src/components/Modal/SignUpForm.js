@@ -127,7 +127,7 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
                         </div>
                     </div>
                 </div>
-                {errors.submit && <div className="error">{errors.submit}</div> }
+                {errors.submit && <div className="error">{errors.submit}</div>}
                 <button type="submit">Sign Up</button>
             </form>
             <div className="login-link">

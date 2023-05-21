@@ -15,6 +15,34 @@
     opacity: 0.2;
 }
 
+.message-content.updated {
+    background-color: #fcecbd !important;
+    position: relative;
+    color: black !important;
+}
+
+.message-content.updated:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fcecbd;
+    opacity: 0;
+    z-index: -1;
+    animation: highlight 1s ease-out forwards;
+}
+
+@keyframes highlight {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 /* Received message styles */
 .message-sent .message-content {
     background-color: #007aff;

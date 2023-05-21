@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import {Button, Modal} from 'react-bootstrap';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {closeModal} from "../../actions/confirmModalActions";
@@ -9,8 +9,10 @@ const ConfirmationModal = () => {
         show,
         title = 'Confirmation',
         body = 'Are you sure?',
-        positiveAction = () => {},
-        negativeAction = () => {},
+        positiveAction = () => {
+        },
+        negativeAction = () => {
+        },
         positiveButtonTitle = 'Confirm',
         negativeButtonTitle = 'Cancel',
     } = useSelector(state => state.confirmModal);

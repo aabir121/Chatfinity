@@ -20,6 +20,9 @@ public class Message
 
     [BsonElement("timestamp")]
     public DateTime Timestamp { get; set; }
+    
+    [BsonElement("isUpdated")]
+    public bool IsUpdated { get; set; }
 
     public Message(string sender, string receiver, string content, DateTime timestamp)
     {
@@ -27,5 +30,6 @@ public class Message
         Receiver = receiver;
         Content = content;
         Timestamp = timestamp;
+        IsUpdated = false;
     }
 }

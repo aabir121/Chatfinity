@@ -90,18 +90,18 @@ public class ChatRepository : RepositoryBase<Chat>, IChatRepository
     public async Task<bool> UpdateMessageContent(ObjectId chatId, ObjectId messageId, string newContent)
     {
         // Create a filter expression to find the chat document by its Id and the message within the Messages list by its Id
-        var filter = Builders<Chat>.Filter.And(
-            Builders<Chat>.Filter.Eq(c => c.Id, chatId),
-            Builders<Chat>.Filter.ElemMatch(c => c.Messages, m => m.Id == messageId)
-        );
+        var chat = await Collection.Find(c => c.Id == chatId).FirstOrDefaultAsync();
+        var message = chat.Messages.FirstOrDefault(m => m.Id == messageId);
+        if (message == null)
+        {
+            return false;
+        }
+        message.Content = newContent;
+        message.IsUpdated = true;
 
-        // Create an update expression to set the content of the message with the specified Id to the new value
-        var update = Builders<Chat>.Update.Set("Messages.$.Content", newContent);
+        var result = await Collection.ReplaceOneAsync(m => m.Id == chatId, chat);
 
-        // Call UpdateOneAsync to perform the update operation
-        var result = await Collection.UpdateOneAsync(filter, update);
-
-        return result.IsAcknowledged;
+        return result.IsAcknowledged; 
     }
 
 
