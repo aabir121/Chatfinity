@@ -18,20 +18,20 @@ public class ChatService : IChatService
         _userService = userService;
     }
     
-    public async Task<List<MessageDto>?> GetPublicMessages()
+    public async Task<ChatDto?> GetPublicMessages()
     {
         var publicChat = await _chatRepository.GetOrCreatePublicChatAsync();
         
-        return PrepareMsgListFromChat(publicChat);
+        return publicChat is null ? null : PrepareChatDto(publicChat);
     }
 
-    public async Task<List<MessageDto>?> GetPrivateMessagesByParticipants(string userName1, string userName2)
+    public async Task<ChatDto?> GetPrivateMessagesByParticipants(string userName1, string userName2)
     {
         ValidateUserName(userName1);
         ValidateUserName(userName2);
         
         var privateChat = await _chatRepository.GetOrCreatePrivateChatAsync(userName1, userName2);
-        return PrepareMsgListFromChat(privateChat);
+        return privateChat is null ? null : PrepareChatDto(privateChat);
     }
 
     public async Task<MessageDto?> CreateMessage(string chatType, string[] participants, MessageDto newMessage)
@@ -103,9 +103,9 @@ public class ChatService : IChatService
         return message is null ? null : new MessageDto(message.Id.ToString(), message.Sender, message.Receiver, message.Content, message.Timestamp);
     }
 
-    private static List<MessageDto>? PrepareMsgListFromChat(Chat? chat)
+    private static ChatDto? PrepareChatDto(Chat chat)
     {
-        return chat?.Messages
+        var messages = chat.Messages            
             .Select(msg => new MessageDto(
                 msg.Id.ToString(),
                 msg.Sender,
@@ -113,6 +113,8 @@ public class ChatService : IChatService
                 msg.Content,
                 msg.Timestamp))
             .ToList();
+
+        return new ChatDto(chat.Id.ToString(), chat.Type, messages);
     }
 
     private void ValidateUserName(string userName)

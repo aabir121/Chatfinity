@@ -17,51 +17,29 @@ namespace backend.Controllers
         }
 
         [HttpGet("Public")]
-        public async Task<ActionResult<List<MessageDto>>> GetPublicMessages()
+        public async Task<ActionResult<ChatDto>> GetPublicMessages()
         {
-            var messages = await _chatService.GetPublicMessages();
+            var chatDto = await _chatService.GetPublicMessages();
 
-            if (messages == null)
+            if (chatDto == null)
             {
                 return NotFound();
             }
 
-            return messages;
+            return chatDto;
         }
 
         [HttpGet("Private/{user1}/{user2}")]
-        public async Task<ActionResult<List<MessageDto>>> GetPrivateMessages(string user1, string user2)
+        public async Task<ActionResult<ChatDto>> GetPrivateMessages(string user1, string user2)
         {
-            var messages = await _chatService.GetPrivateMessagesByParticipants(user1, user2);
+            var chatDto = await _chatService.GetPrivateMessagesByParticipants(user1, user2);
 
-            if (messages == null)
+            if (chatDto == null)
             {
                 return NotFound();
             }
 
-            return messages;
-        }
-
-        [HttpPost("Message")]
-        public async Task<ActionResult<MessageDto>> CreateMessage(CreateMessageDto messageDto)
-        {
-            var participants = new[]{messageDto.Sender};
-            if (messageDto.Type.Equals(ChatType.Public.ToString(), StringComparison.OrdinalIgnoreCase))
-            {
-                messageDto.Receiver = "";
-            }
-            else if (messageDto.Type.Equals(ChatType.Private.ToString(), StringComparison.OrdinalIgnoreCase))
-            {
-                participants = new[] { messageDto.Sender, messageDto.Receiver ?? "" };
-            }
-            else
-            {
-                return BadRequest($"Invalid chat type: {messageDto.Type}");
-            }
-
-            var newMsg = await _chatService.CreateMessage(messageDto.Type.ToLower(), participants, messageDto);
-
-            return newMsg;
+            return chatDto;
         }
     }
 }

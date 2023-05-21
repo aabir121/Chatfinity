@@ -26,6 +26,8 @@ function ChatWindow() {
     const participantsRef = useRef(participants);
     participantsRef.current = participants;
 
+    const [currentChatMetaData, setCurrentChatMetaData] = useState({});
+
     const openModal = () => {
         setShowLoginModal(true);
     };
@@ -75,6 +77,7 @@ function ChatWindow() {
             latestMsgRef.current.scrollIntoView();
         }
         typingStatusHandler();
+        deleteMsgHandler();
     }, [allMessage]);
 
     useEffect(() => {
@@ -181,12 +184,34 @@ function ChatWindow() {
 
         return getMessagesPromise.then((data) => {
             const messages = [];
-            data.forEach(d => {
+            data.messages.forEach(d => {
                 messages.push({
                     ...d, type: 'message'
                 });
             });
             setAllMessage(prevState => messages);
+
+            const chatMetaData = {
+                chatId: data.id,
+                type: data.type
+            };
+
+            setCurrentChatMetaData(prevState => chatMetaData);
+        });
+    };
+
+    const handleMessageEdit = () => {
+
+    };
+
+    const handleMessageDelete = (messageId) => {
+        ChatService.deleteMessage(currentChatMetaData.chatId, messageId);
+    };
+
+    const deleteMsgHandler = (chatId, messageId) => {
+        ChatService.setOnMessageDeletedHandler((chatId, messageId) => {
+            const msgs = [...allMessage].filter(m => m.id !== messageId);
+            setAllMessage(msgs);
         });
     };
 
@@ -200,7 +225,8 @@ function ChatWindow() {
                     {allMessage.map((obj, index) => (
                         <div ref={index === allMessage.length - 1 ? latestMsgRef : null} key={obj.timestamp}>
                             <ChatMessage prevMessageObj={index > 1 ? allMessage[index - 1] : null}
-                                         messageObj={obj}></ChatMessage>
+                                         messageObj={obj} onEdit={handleMessageEdit} onDelete={handleMessageDelete}>
+                            </ChatMessage>
                         </div>
                     ))}
                 </div>

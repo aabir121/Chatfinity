@@ -19,12 +19,12 @@
     border-radius: 5px; /* Round the edges of the scrollbar thumb */
 }
 
-
 /* Message styles */
 .message {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
+    position: relative;
 }
 
 .message .info {
@@ -53,6 +53,7 @@
     max-width: 70%;
     align-self: flex-start;
     cursor: pointer;
+    position: relative;
 }
 
 .message-content.pending {
@@ -74,9 +75,46 @@
     display: flex;
 }
 
-.status-text>span {
+.status-text > span {
     font-size: 14px;
     margin: auto;
     color: gray;
     font-weight: bold;
+}
+
+#message-options-popover {
+    padding: 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 200px;
+    z-index: 1;
+}
+
+/* Popover menu styles */
+.popover-header {
+    background-color: #f6f7f9;
+    border-bottom: none;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.popover-body {
+    padding: 0;
+}
+
+.popover-body button {
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    background: none;
+    color: #4b4f56;
+    cursor: pointer;
+}
+
+.popover-body button:hover {
+    background-color: #f6f7f9;
 }

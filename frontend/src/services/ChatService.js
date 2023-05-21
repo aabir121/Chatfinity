@@ -9,6 +9,7 @@ class _ChatService {
     onSendMessage = null;
     onTypingStatus = null;
     isConnected = false;
+    onMessageDeleted = null;
 
     initialize = (userName) => {
         this.connection = new signalR.HubConnectionBuilder()
@@ -26,6 +27,10 @@ class _ChatService {
 
         this.connection.on(SignalRFunctionNames.TYPING_STATUS, (user, type, participants, isTyping) => {
             this.onTypingStatus?.(user, type, participants, isTyping);
+        });
+
+        this.connection.on(SignalRFunctionNames.MESSAGE_DELETED, (chatId, messageId)=>{
+           this.onMessageDeleted?.(chatId, messageId);
         });
 
         this.connection.onclose(() => {
@@ -71,6 +76,10 @@ class _ChatService {
         this.onTypingStatus = handler;
     }
 
+    setOnMessageDeletedHandler = (handler) => {
+        this.onMessageDeleted = handler;
+    }
+
     invoke = (functionName, callback, ...args) => {
         if (this.isConnected) {
             this.connection?.invoke(functionName, ...args)
@@ -90,6 +99,10 @@ class _ChatService {
     sendTypingStatus = (user, type, participants, isTyping) => {
         this.invoke(SignalRFunctionNames.TYPING_STATUS, null, user, type, participants, isTyping);
     }
+
+    deleteMessage = (chatId, messageId) => {
+      this.invoke(SignalRFunctionNames.DELETE_MESSAGE, null, chatId, messageId);
+    };
 }
 
 const ChatService = new _ChatService();

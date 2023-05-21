@@ -39,7 +39,7 @@ namespace backend.Commands
             var participants = GetChatParticipants(chatType);
             var clientsToSend = GetClientsToSend(chatType);
 
-            await _chatService.CreateMessage(chatType.ToString(), participants, _message);
+            var chatDto = await _chatService.CreateMessage(chatType.ToString(), participants, _message);
 
             await SendMessageToClients(clientsToSend);
         }
@@ -54,7 +54,7 @@ namespace backend.Commands
             };
         }
 
-        private List<string> GetClientsToSend(ChatType chatType)
+        private IEnumerable<string> GetClientsToSend(ChatType chatType)
         {
             return chatType switch
             {
