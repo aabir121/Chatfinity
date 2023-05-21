@@ -7,6 +7,7 @@ import {Button, ButtonGroup, OverlayTrigger, Popover} from 'react-bootstrap';
 import {FaEdit, FaTrash} from 'react-icons/fa';
 import {openModal} from '../../actions/confirmModalActions';
 import StatusMessage from "./StatusMessage";
+import EditingMessage from "./EditingMessage";
 
 function ChatMessage({messageObj, prevMessageObj, onEdit, onDelete}) {
     const currUserName = useSelector((state) => state.userList.currentUser?.userName);
@@ -17,14 +18,12 @@ function ChatMessage({messageObj, prevMessageObj, onEdit, onDelete}) {
     const messageClass = `message ${sent ? 'message-sent' : ''}`;
     const hideName = ['message', 'typing'].includes(prevType) && prevSender === sender;
     const containerRef = useRef(null);
-    const editingAreaRef = useRef(null); // Reference to the editing area
     const [showMsgInfo, setShowMsgInfo] = useState(false);
     const [hoverTimer, setHoverTimer] = useState(null);
     const isTypingContent = <PulseLoader size={10}/>;
     const isPendingClass = isPending ? 'pending' : '';
     const dispatch = useDispatch();
     const [editing, setEditing] = useState(false);
-    const [editedContent, setEditedContent] = useState(content);
 
     const handleMouseEnter = () => {
         const timer = setTimeout(() => {
@@ -43,22 +42,6 @@ function ChatMessage({messageObj, prevMessageObj, onEdit, onDelete}) {
             clearTimeout(hoverTimer);
         };
     }, [hoverTimer]);
-
-    useEffect(() => {
-        // Add event listener to handle outside clicks when editing
-        const handleClickOutside = (event) => {
-            if (editing && editingAreaRef.current && !editingAreaRef.current.contains(event.target)) {
-                setEditedContent(content); // Revert back to the original content
-                setEditing(false);
-            }
-        };
-
-        document.addEventListener('click', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('click', handleClickOutside);
-        };
-    }, [editing, content]);
 
     const handleConfirmation = (onConfirm) => {
         dispatch(
@@ -85,13 +68,12 @@ function ChatMessage({messageObj, prevMessageObj, onEdit, onDelete}) {
         });
     };
 
-    const handleSave = () => {
+    const handleEditedContentSave = (editedContent) => {
         onEdit?.(id, editedContent);
         setEditing(false);
     };
 
-    const handleCancel = () => {
-        setEditedContent(content);
+    const handleEditContentCancel = () => {
         setEditing(false);
     };
 
@@ -119,17 +101,7 @@ function ChatMessage({messageObj, prevMessageObj, onEdit, onDelete}) {
             <div className={messageClass}>
                 {!hideName && <div className="message-sender">{sender}</div>}
                 {editing ? (
-                    <div className="message-content editing" ref={editingAreaRef}>
-                        <textarea value={editedContent} onChange={(e) => setEditedContent(e.target.value)}/>
-                        <div className="edit-buttons">
-                            <Button variant="success" onClick={handleSave}>
-                                Save
-                            </Button>
-                            <Button variant="secondary" onClick={handleCancel}>
-                                Cancel
-                            </Button>
-                        </div>
-                    </div>
+                    <EditingMessage content={content} onEditSave={handleEditedContentSave} onEditCancel={handleEditContentCancel}/>
                 ) : (
                     <div
                         className={`message-content ${isPendingClass}`}
