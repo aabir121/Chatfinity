@@ -72,17 +72,6 @@
     align-self: flex-end;
 }
 
-.status-text {
-    display: flex;
-}
-
-.status-text > span {
-    font-size: 14px;
-    margin: auto;
-    color: gray;
-    font-weight: bold;
-}
-
 #message-options-popover {
     padding: 0;
     position: absolute;
