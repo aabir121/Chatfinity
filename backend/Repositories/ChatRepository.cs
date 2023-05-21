@@ -96,13 +96,14 @@ public class ChatRepository : RepositoryBase<Chat>, IChatRepository
         );
 
         // Create an update expression to set the content of the message with the specified Id to the new value
-        var update = Builders<Chat>.Update.Set(c => c.Messages[-1].Content, newContent);
+        var update = Builders<Chat>.Update.Set("Messages.$.Content", newContent);
 
         // Call UpdateOneAsync to perform the update operation
         var result = await Collection.UpdateOneAsync(filter, update);
 
         return result.IsAcknowledged;
     }
+
 
     public async Task<Message?> GetMessageById(ObjectId chatId, ObjectId messageId)
     {

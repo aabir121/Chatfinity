@@ -10,6 +10,7 @@ class _ChatService {
     onTypingStatus = null;
     isConnected = false;
     onMessageDeleted = null;
+    onMessageUpdated = null;
 
     initialize = (userName) => {
         this.connection = new signalR.HubConnectionBuilder()
@@ -29,8 +30,12 @@ class _ChatService {
             this.onTypingStatus?.(user, type, participants, isTyping);
         });
 
-        this.connection.on(SignalRFunctionNames.MESSAGE_DELETED, (chatId, messageId)=>{
-           this.onMessageDeleted?.(chatId, messageId);
+        this.connection.on(SignalRFunctionNames.MESSAGE_DELETED, (chatId, messageId) => {
+            this.onMessageDeleted?.(chatId, messageId);
+        });
+
+        this.connection.on(SignalRFunctionNames.MESSAGE_UPDATED, (updatedMsg) => {
+            this.onMessageUpdated?.(updatedMsg);
         });
 
         this.connection.onclose(() => {
@@ -80,6 +85,10 @@ class _ChatService {
         this.onMessageDeleted = handler;
     }
 
+    setOnMessageUpdatedHandler = (handler) => {
+        this.onMessageUpdated = handler;
+    }
+
     invoke = (functionName, callback, ...args) => {
         if (this.isConnected) {
             this.connection?.invoke(functionName, ...args)
@@ -101,7 +110,11 @@ class _ChatService {
     }
 
     deleteMessage = (chatId, messageId) => {
-      this.invoke(SignalRFunctionNames.DELETE_MESSAGE, null, chatId, messageId);
+        this.invoke(SignalRFunctionNames.DELETE_MESSAGE, null, chatId, messageId);
+    };
+
+    updateMessage = (chatId, messageId, content) => {
+        this.invoke(SignalRFunctionNames.UPDATE_MESSAGE, null, chatId, messageId, content);
     };
 }
 

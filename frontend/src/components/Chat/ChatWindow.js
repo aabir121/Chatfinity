@@ -78,6 +78,7 @@ function ChatWindow() {
         }
         typingStatusHandler();
         deleteMsgHandler();
+        updateMsgHandler();
     }, [allMessage]);
 
     useEffect(() => {
@@ -200,18 +201,32 @@ function ChatWindow() {
         });
     };
 
-    const handleMessageEdit = () => {
-
+    const handleMessageEdit = (messageId, content) => {
+        ChatService.updateMessage(currentChatMetaData.chatId, messageId, content);
     };
 
     const handleMessageDelete = (messageId) => {
         ChatService.deleteMessage(currentChatMetaData.chatId, messageId);
     };
 
-    const deleteMsgHandler = (chatId, messageId) => {
+    const deleteMsgHandler = () => {
         ChatService.setOnMessageDeletedHandler((chatId, messageId) => {
-            const msgs = [...allMessage].filter(m => m.id !== messageId);
-            setAllMessage(msgs);
+            setAllMessage((prevMessages) =>
+                prevMessages.filter((message) => message.id !== messageId));
+        });
+    };
+
+    const updateMsgHandler = () => {
+        ChatService.setOnMessageUpdatedHandler((updatedMsg) => {
+            setAllMessage((prevMessages) => {
+                const updatedMessages = prevMessages.map((message) => {
+                    if (message.id === updatedMsg.id) {
+                        return {...message, content: updatedMsg.content};
+                    }
+                    return message;
+                });
+                return [...updatedMessages];
+            });
         });
     };
 

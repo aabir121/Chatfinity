@@ -4,7 +4,9 @@ const SignalRFunctionNames = Object.freeze({
     TYPING_STATUS: "TypingStatus",
     SEND_MESSAGE: "SendMessage",
     DELETE_MESSAGE: "DeleteMessage",
-    MESSAGE_DELETED: "MessageDeleted"
+    MESSAGE_DELETED: "MessageDeleted",
+    UPDATE_MESSAGE: "UpdateMessage",
+    MESSAGE_UPDATED: "MessageUpdated"
 });
 
 export default SignalRFunctionNames;

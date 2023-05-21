@@ -1,16 +1,16 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import '../../styles/Chat/ChatMessage.css';
-import {formatChatTimestamp} from './Utils';
-import {useDispatch, useSelector} from 'react-redux';
-import {PulseLoader} from 'react-spinners';
-import {Button, ButtonGroup, OverlayTrigger, Popover} from 'react-bootstrap';
-import {FaEdit, FaTrash} from 'react-icons/fa';
-import {openModal} from "../../actions/confirmModalActions";
+import { formatChatTimestamp } from './Utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { PulseLoader } from 'react-spinners';
+import { Button, ButtonGroup, OverlayTrigger, Popover } from 'react-bootstrap';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { openModal } from "../../actions/confirmModalActions";
 
-function ChatMessage({messageObj, prevMessageObj, onEdit, onDelete}) {
+function ChatMessage({ messageObj, prevMessageObj, onEdit, onDelete }) {
     const currUserName = useSelector((state) => state.userList.currentUser?.userName);
-    const {id, sender, content, type, timestamp, isPending} = messageObj;
-    const {sender: prevSender, type: prevType} = prevMessageObj || {};
+    const { id, sender, content, type, timestamp, isPending } = messageObj;
+    const { sender: prevSender, type: prevType } = prevMessageObj || {};
     const sent = type === 'message' && currUserName === sender;
     const isStatus = type === 'status';
     const messageClass = `message ${sent ? 'message-sent' : ''}`;
@@ -18,9 +18,11 @@ function ChatMessage({messageObj, prevMessageObj, onEdit, onDelete}) {
     const containerRef = useRef(null);
     const [showMsgInfo, setShowMsgInfo] = useState(false);
     const [hoverTimer, setHoverTimer] = useState(null);
-    const isTypingContent = <PulseLoader size={10}/>;
+    const isTypingContent = <PulseLoader size={10} />;
     const isPendingClass = isPending ? 'pending' : '';
     const dispatch = useDispatch();
+    const [editing, setEditing] = useState(false);
+    const [editedContent, setEditedContent] = useState(content);
 
     const handleMouseEnter = () => {
         const timer = setTimeout(() => {
@@ -45,23 +47,29 @@ function ChatMessage({messageObj, prevMessageObj, onEdit, onDelete}) {
             title: 'Delete Message',
             body: 'Are you sure you want to delete this message?',
             positiveAction: onConfirm,
-            negativeAction: () => {
-            },
+            negativeAction: () => { },
             positiveButtonTitle: 'Delete',
             negativeButtonTitle: 'Cancel',
         }));
     };
 
     const handleEdit = () => {
-        // Handle edit functionality here
-        onEdit?.();
+        setEditing(true);
     };
 
     const handleDelete = () => {
-        // Handle delete functionality here
         handleConfirmation(() => {
             onDelete?.(id);
         });
+    };
+
+    const handleSave = () => {
+        onEdit?.(id, editedContent);
+        setEditing(false);
+    };
+
+    const handleCancel = () => {
+        setEditing(false);
     };
 
     const popover = (
@@ -69,10 +77,10 @@ function ChatMessage({messageObj, prevMessageObj, onEdit, onDelete}) {
             <Popover.Body id={`message-options-popover-content-${id}`}>
                 <ButtonGroup vertical>
                     <Button variant="light" onClick={handleEdit}>
-                        <FaEdit/>
+                        <FaEdit />
                     </Button>
                     <Button variant="light" onClick={handleDelete}>
-                        <FaTrash/>
+                        <FaTrash />
                     </Button>
                 </ButtonGroup>
             </Popover.Body>
@@ -88,26 +96,42 @@ function ChatMessage({messageObj, prevMessageObj, onEdit, onDelete}) {
             ) : (
                 <div className={messageClass}>
                     {!hideName && <div className="message-sender">{sender}</div>}
-                    <div
-                        className={`message-content ${isPendingClass}`}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                    >
-                        {sent ? (
-                            <OverlayTrigger
-                                trigger="click"
-                                placement="auto"
-                                overlay={sent ? popover : null}
-                                rootClose
-                                container={containerRef.current}
-                            >
+                    {editing ? (
+                        <div className="message-content editing">
+              <textarea
+                  value={editedContent}
+                  onChange={(e) => setEditedContent(e.target.value)}
+              />
+                            <div className="edit-buttons">
+                                <Button variant="success" onClick={handleSave}>
+                                    Save
+                                </Button>
+                                <Button variant="secondary" onClick={handleCancel}>
+                                    Cancel
+                                </Button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div
+                            className={`message-content ${isPendingClass}`}
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}
+                        >
+                            {sent ? (
+                                <OverlayTrigger
+                                    trigger="click"
+                                    placement="auto"
+                                    overlay={popover}
+                                    rootClose
+                                    container={containerRef.current}
+                                >
+                                    <span>{type === 'typing' ? isTypingContent : content}</span>
+                                </OverlayTrigger>
+                            ) : (
                                 <span>{type === 'typing' ? isTypingContent : content}</span>
-                            </OverlayTrigger>
-
-                        ) : (
-                            <span>{type === 'typing' ? isTypingContent : content}</span>
-                        )}
-                    </div>
+                            )}
+                        </div>
+                    )}
                     {showMsgInfo && <span className="info">{formatChatTimestamp(timestamp)}</span>}
                 </div>
             )}

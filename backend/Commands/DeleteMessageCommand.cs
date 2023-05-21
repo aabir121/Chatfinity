@@ -40,7 +40,11 @@ namespace backend.Commands
 
             await _chatService.DeleteMessage(_chatId, _messageId);
 
-            await _hubContext.Clients.Clients(connectionIds).MessageDeleted(_chatId, _messageId);
+            var broadCastFunc = connectionIds.Count > 1
+                ? _hubContext.Clients.Clients(connectionIds)
+                : _hubContext.Clients.All;
+            
+            await broadCastFunc.MessageDeleted(_chatId, _messageId);
         }
 
         private static IEnumerable<string> GetChatParticipants(MessageDto message)
