@@ -1,6 +1,6 @@
 /* Edit message styles */
 .message-content.editing {
-    background-color: #fff;
+    background-color: #fff !important;
     border: 1px solid #007aff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
