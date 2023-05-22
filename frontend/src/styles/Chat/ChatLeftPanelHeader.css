@@ -17,6 +17,7 @@
 .left-panel-header .user-info {
     display: flex;
     flex: 1;
+    gap: 5px;
 }
 
 .left-panel-header .full-name {
@@ -36,4 +37,23 @@
 
 .left-panel-header .logout-btn:hover {
     opacity: 0.7;
+}
+
+.close-icon {
+    font-size: 20px;
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .close-icon {
+        display: flex;
+        flex: 1;
+        align-items: end;
+        justify-content: flex-end;
+        cursor: pointer;
+    }
+
+    .left-panel-header .full-name {
+        flex: none;
+    }
 }

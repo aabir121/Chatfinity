@@ -30,3 +30,9 @@
     font-size: 14px;
     color: #65676b;
 }
+
+@media (max-width: 767px) {
+    .chat-window-header {
+        padding-left: 50px;
+    }
+}

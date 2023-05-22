@@ -6,6 +6,7 @@ import {loadUsers} from "../../actions/userListActions";
 import {setChatWindowParams} from "../../actions/chatWindowActions";
 import ChatLeftPanelHeader from "./ChatLeftPanelHeader";
 import ChatUserList from "./ChatUserList";
+import {FaBars} from "react-icons/fa";
 
 function ChatLeftPanel() {
     const dispatch = useDispatch();
@@ -15,6 +16,11 @@ function ChatLeftPanel() {
     const {chatType} = useSelector(state => ({
         chatType: state.chatWindow.chatType
     }));
+    const [showSidePanel, setShowSidePanel] = useState(true);
+
+    const handleToggle = () => {
+        setShowSidePanel(!showSidePanel);
+    };
 
     useEffect(() => {
         if (!currentUser || !currentUser?.userName) {
@@ -60,9 +66,19 @@ function ChatLeftPanel() {
         dispatch(setChatWindowParams(newType, participants));
     };
 
+    if (!showSidePanel) {
+        return (
+            <div className={`side-panel-toggle`} onClick={handleToggle}>
+                <div className="hamburger-icon">
+                    <FaBars/>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="chat-left-panel">
-            <ChatLeftPanelHeader user={currentUser}></ChatLeftPanelHeader>
+        <div className={`chat-left-panel ${showSidePanel ? 'expanded' : ''}`}>
+            <ChatLeftPanelHeader user={currentUser} toggleCollapse={handleToggle}></ChatLeftPanelHeader>
             <ChatUserList allUsers={allUsers} onUserClick={onUserClick}></ChatUserList>
         </div>
     );
