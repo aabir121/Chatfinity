@@ -43,11 +43,11 @@ h2 {
     position: relative;
 }
 
-.password-container input{
+.password-container input {
     width: 100%;
 }
 
-.password-container span{
+.password-container span {
     position: absolute;
     top: 45%;
     right: 15px;

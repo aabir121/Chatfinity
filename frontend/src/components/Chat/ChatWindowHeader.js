@@ -2,6 +2,7 @@ import "../../styles/Chat/ChatWindowHeader.css";
 import React, {useEffect, useState} from "react";
 import {formatTimeAgo} from "./Utils";
 import {useSelector} from "react-redux";
+import UserAvatar from "../Common/UserAvatar";
 
 function ChatWindowHeader({receiver}) {
     const {allUsers, currentUser} = useSelector((state) => state.userList);
@@ -27,7 +28,7 @@ function ChatWindowHeader({receiver}) {
 
     return (
         <div className="chat-window-header">
-            <div className="avatar"></div>
+            <UserAvatar avatarStr={receiverInfo.avatar}/>
             <div className="user-info">
                 <div className="full-name">{receiverInfo.fullName}</div>
                 {!!lastOnlineText && <div className="last-seen">Last online {lastOnlineText}</div>}

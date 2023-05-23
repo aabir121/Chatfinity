@@ -21,7 +21,10 @@ public class User
     
     [BsonElement("lastOnlineTime")] public DateTime? LastOnlineTime { get; set; }
     
-    public User(string? id, string userName, string firstName, string lastName, DateTime dateOfBirth, string password)
+    [BsonElement("avatar")] public byte[]? Avatar { get; set; }
+    
+    public User(string? id, string userName, string firstName, string lastName, 
+        DateTime dateOfBirth, string password, string avatar)
     {
         Id = id;
         UserName = userName;
@@ -29,5 +32,6 @@ public class User
         LastName = lastName;
         DateOfBirth = dateOfBirth;
         Password = password;
+        Avatar = Convert.FromBase64String(avatar.Substring(avatar.IndexOf(',') + 1));
     }
 }

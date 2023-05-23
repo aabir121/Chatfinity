@@ -1,11 +1,12 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import '../../styles/Modal/SignUpForm.css';
-import {PasswordInput} from "../Common/PasswordInput";
-import {UserDataService} from "../../services/UserDataService";
-import {useDispatch} from "react-redux";
-import {hideLoader, showLoader} from "../../actions/loaderActions";
+import { PasswordInput } from "../Common/PasswordInput";
+import { UserDataService } from "../../services/UserDataService";
+import { useDispatch } from "react-redux";
+import { hideLoader, showLoader } from "../../actions/loaderActions";
+import AvatarUploader from "../Common/AvatarUploader";
 
-const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
+const SignupForm = ({ onBackToLoginClick, onSignUpSubmitClick }) => {
     const [formData, setFormData] = useState({
         username: "",
         firstName: "",
@@ -15,24 +16,27 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
         confirmPassword: "",
         errors: {},
     });
+    const [avatar, setAvatar] = useState(null);
     const dispatch = useDispatch();
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         const errors = formData.errors;
         if (errors.hasOwnProperty(name)) {
             errors[name] = "";
         }
 
-        setFormData((prevState) =>
-            ({...prevState, [name]: value, errors: errors}));
+        setFormData((prevState) => ({ ...prevState, [name]: value, errors: errors }));
+    };
+
+    const handleAvatarChange = (data) => {
+        setAvatar(data);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Validate form data
         const errors = {};
-        const {dob, password, confirmPassword} = formData;
+        const { dob, password, confirmPassword } = formData;
         const currentDate = new Date();
         const dobDate = new Date(dob);
         const ageDifference = currentDate - dobDate;
@@ -47,23 +51,26 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
         if (password !== confirmPassword) {
             errors.confirmPassword = "Confirm password does not match";
         }
+
         if (Object.keys(errors).length === 0) {
             createAccount();
         } else {
-            setFormData((prevState) => ({...prevState, errors}));
+            setFormData((prevState) => ({ ...prevState, errors }));
         }
     };
 
     const createAccount = () => {
         const requestBody = {
-            UserName: formData.username,
-            FirstName: formData.firstName,
-            LastName: formData.lastName,
-            DateOfBirth: formData.dob,
-            Password: formData.password,
+            userName: formData.username,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            dateOfBirth: formData.dob,
+            password: formData.password,
+            avatar: avatar
         };
 
         dispatch(showLoader());
+
         UserDataService.createNewUser(requestBody).then((data) => {
             onSignUpSubmitClick(data);
             dispatch(hideLoader());
@@ -72,17 +79,20 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
             dispatch(hideLoader());
             const errorObj = {
                 submit: error.description
-            }
-            setFormData({...formData, errors: errorObj})
+            };
+            setFormData({ ...formData, errors: errorObj });
         });
-    }
+    };
 
-    const {username, firstName, lastName, dob, password, confirmPassword, errors} = formData;
+    const { username, firstName, lastName, dob, password, confirmPassword, errors } = formData;
 
     return (
         <div className="signup-form-container">
             <h2>Sign Up</h2>
             <form className="signup-form" onSubmit={handleSubmit}>
+                <div className="avatar-container">
+                    <AvatarUploader handleAvatarUpload={handleAvatarChange}/>
+                </div>
                 <input
                     type="text"
                     name="username"
@@ -111,7 +121,7 @@ const SignupForm = ({onBackToLoginClick, onSignUpSubmitClick}) => {
                     </div>
                 </div>
                 {errors.dob && <div className="error">{errors.dob}</div>}
-                <input type="date" name="dob" value={dob} onChange={handleChange}/>
+                <input type="date" name="dob" value={dob} onChange={handleChange} />
                 <div className="row">
                     <div className="col-md-6">
                         {errors.password && <div className="error">{errors.password}</div>}

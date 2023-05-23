@@ -6,14 +6,6 @@
     border-bottom: 1px solid #ddd;
 }
 
-.left-panel-header .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #ddd;
-    margin-right: 10px;
-}
-
 .left-panel-header .user-info {
     display: flex;
     flex: 1;

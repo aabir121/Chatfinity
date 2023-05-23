@@ -57,7 +57,7 @@ public class UserService : IUserService
         await UpdateOneAsync(logoutUserDto.UserName, user);
     }
 
-    public async Task CreateAsync(User user)
+    public async Task CreateAsync(CreateUserDto user)
     {
         var userInDb = await _userRepository.FindUserByUserName(user.UserName);
         if (userInDb != null)
@@ -66,7 +66,10 @@ public class UserService : IUserService
         }
         
         user.Password = PasswordUtils.HashString(user.Password);
-        await _userRepository.CreateUser(user);
+
+        var userToCreate = new User(ObjectId.GenerateNewId().ToString(), user.UserName, user.FirstName, user.LastName, 
+            user.DateOfBirth, user.Password, user.Avatar);
+        await _userRepository.CreateUser(userToCreate);
     }
 
     public async Task UpdateOneAsync(string userName, User userToUpdate)

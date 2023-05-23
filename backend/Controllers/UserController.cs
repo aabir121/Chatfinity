@@ -57,7 +57,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(User user)
+    public async Task<IActionResult> Create(CreateUserDto user)
     {
         await _userService.CreateAsync(user);
 
@@ -96,7 +96,7 @@ public class UserController : ControllerBase
 
         return allUsers.Select(user => 
             new ChatUserDto(user.UserName, user.FirstName, user.LastName, user.LastOnlineTime, 
-                connectedUserSet.Contains(user.UserName)))
+                connectedUserSet.Contains(user.UserName), user.Avatar))
             .ToList();
     }
 }
