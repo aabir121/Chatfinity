@@ -48,3 +48,23 @@
     min-width: 100px;
     width: auto;
 }
+
+.login-link {
+    font-size: 14px;
+    color: #999;
+    text-align: center;
+}
+
+.login-link p {
+    margin: 5px 0;
+}
+
+.login-link span {
+    color: #007bff;
+    cursor: pointer;
+}
+
+.login-link span:hover {
+    text-decoration: underline;
+}
+

@@ -1,6 +1,5 @@
 import React, {useRef, useState} from "react";
 import LogInForm from "./LogInForm";
-import SignUpForm from "./SignUpForm";
 import {Modal} from "react-bootstrap";
 import {showToast} from "../../actions/toastActions";
 import {useDispatch} from "react-redux";

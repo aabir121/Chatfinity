@@ -10,12 +10,12 @@ const RegProgressIndicator = ({currentStep}) => {
 
             <div className="step-circles">
                 {steps.map((step, index) => (
-                    <>
+                    <React.Fragment key={index}>
                         <div  className={`circle ${index < currentStep ? 'filled' : ''}`}>
                             {index + 1}
                         </div>
                         {index < 2 && <div className={`line ${index < currentStep - 1 ? 'filled' : ''}`}></div>}
-                    </>
+                    </React.Fragment>
                 ))}
             </div>
         </div>
