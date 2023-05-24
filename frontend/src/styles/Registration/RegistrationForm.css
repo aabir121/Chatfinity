@@ -1,0 +1,50 @@
+.reg-form-container {
+    margin: 0 auto;
+    padding: 20px 40px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.input-container input {
+    margin: 10px 0px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: 100%;
+}
+
+.input-container {
+    padding: 30px;
+}
+
+.error-message {
+    width: 100%;
+    display: inline-block;
+    padding: 5px 10px;
+    color: #fff;
+    background-color: rgba(255, 77, 79, 0.39);
+    border-radius: 4px;
+    font-size: 14px;
+    animation: fade-in 0.3s ease-in-out;
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.reg-button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.reg-button-container button {
+    min-width: 100px;
+    width: auto;
+}

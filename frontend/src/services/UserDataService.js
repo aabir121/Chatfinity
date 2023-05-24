@@ -15,5 +15,9 @@ export const UserDataService = {
 
     logoutUser: (userName) => {
         return ApiService.postData("/User/Logout", {userName: userName});
+    },
+
+    validateUserName: (userName) => {
+        return ApiService.getData("/User/Validate/" + userName);
     }
 };

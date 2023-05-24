@@ -4,6 +4,7 @@ import {PasswordInput} from "../Common/PasswordInput";
 import {UserDataService} from "../../services/UserDataService";
 import {useDispatch} from "react-redux";
 import {hideLoader, showLoader} from "../../actions/loaderActions";
+import {Button} from "react-bootstrap";
 
 const LogInForm = ({errorText, onLoginSuccess, onSignUpClick}) => {
     const [formData, setFormData] = useState({
@@ -45,7 +46,8 @@ const LogInForm = ({errorText, onLoginSuccess, onSignUpClick}) => {
                        placeholder="Username"/>
                 <PasswordInput onChange={handleInputChange} passValue={formData.password}></PasswordInput>
                 <span className="error">{formData.errorText}</span>
-                <button type="submit">Login</button>
+                {/*<button type="submit">Login</button>*/}
+                <Button type="submit" variant="success">Login</Button>
                 <div className="signup-link">
                     <p>Don't have an account?</p>
                     <span onClick={onSignUpClick}>Sign up</span>

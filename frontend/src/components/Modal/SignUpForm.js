@@ -5,6 +5,7 @@ import { UserDataService } from "../../services/UserDataService";
 import { useDispatch } from "react-redux";
 import { hideLoader, showLoader } from "../../actions/loaderActions";
 import AvatarUploader from "../Common/AvatarUploader";
+import RegProgressIndicator from "../Common/RegProgressIndicator";
 
 const SignupForm = ({ onBackToLoginClick, onSignUpSubmitClick }) => {
     const [formData, setFormData] = useState({
@@ -89,6 +90,7 @@ const SignupForm = ({ onBackToLoginClick, onSignUpSubmitClick }) => {
     return (
         <div className="signup-form-container">
             <h2>Sign Up</h2>
+            <RegProgressIndicator currentStep={1}/>
             <form className="signup-form" onSubmit={handleSubmit}>
                 <div className="avatar-container">
                     <AvatarUploader handleAvatarUpload={handleAvatarChange}/>

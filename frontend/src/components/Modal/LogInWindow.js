@@ -4,6 +4,7 @@ import SignUpForm from "./SignUpForm";
 import {Modal} from "react-bootstrap";
 import {showToast} from "../../actions/toastActions";
 import {useDispatch} from "react-redux";
+import RegistrationForm from "../Registration/RegistrationForm";
 
 const LogInWindow = ({show, handleClose}) => {
     const [showSignUp, setShowSignup] = useState(false);
@@ -33,8 +34,7 @@ const LogInWindow = ({show, handleClose}) => {
                    show={show} onHide={handleClose}>
                 {
                     showSignUp ? (
-                        <SignUpForm onBackToLoginClick={onBackToLoginClick}
-                                    onSignUpSubmitClick={onSignUpSubmitClick}></SignUpForm>
+                        <RegistrationForm onBackToLoginClick={onBackToLoginClick} onSignUpSubmitClick={onSignUpSubmitClick}/>
                     ) : (
                         <LogInForm onLoginSuccess={onLoginSuccess} onSignUpClick={onSignUpClick}></LogInForm>
                     )
