@@ -1,0 +1,20 @@
+.input-container {
+    display: flex;
+    gap: 30px;
+    padding: 10px;
+    flex-wrap: wrap-reverse;
+    justify-content: center;
+}
+
+.input-container input {
+    margin: 10px 0px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: 100%;
+}
+
+.text-fields-container {
+    flex: 1;
+}
+

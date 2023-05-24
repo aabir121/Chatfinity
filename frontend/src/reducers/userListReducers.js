@@ -6,7 +6,7 @@ const initialState = {
         userName: "",
         firstName: "",
         lastName: "",
-        dob: new Date(),
+        dateOfBirth: new Date(),
         avatar: ""
     },
     allUsers: []
@@ -54,7 +54,7 @@ const userListReducer = (state = initialState, action) => {
                     userName: "",
                     firstName: "",
                     lastName: "",
-                    dob: new Date(),
+                    dateOfBirth: new Date(),
                     avatar: ""
                 },
                 allUsers: []

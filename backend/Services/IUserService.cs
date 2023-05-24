@@ -11,7 +11,7 @@ public interface IUserService
     Task<User?> AuthAndGetUser(UserDto userDto);
     Task LogoutUser(LogoutUserDto logoutUserDto);
     Task CreateAsync(CreateUserDto user);
-    Task UpdateOneAsync(string userName, User userToUpdate);
+    Task<bool> UpdateOneAsync(string userName, UpdateUserDto userToUpdate);
     Task RemoveAsync(string userName);
     bool IsUserNameValid(string userName);
 }

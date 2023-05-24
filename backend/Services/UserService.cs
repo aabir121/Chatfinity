@@ -54,7 +54,7 @@ public class UserService : IUserService
 
         user.LastOnlineTime = DateTime.Now;
 
-        await UpdateOneAsync(logoutUserDto.UserName, user);
+        await _userRepository.UpdateUser(logoutUserDto.UserName, user);
     }
 
     public async Task CreateAsync(CreateUserDto user)
@@ -72,9 +72,15 @@ public class UserService : IUserService
         await _userRepository.CreateUser(userToCreate);
     }
 
-    public async Task UpdateOneAsync(string userName, User userToUpdate)
-    {
-        await _userRepository.UpdateUser(userName, userToUpdate);
+    public async Task<bool> UpdateOneAsync(string userName, UpdateUserDto userToUpdate)
+    {   
+        var userInDb = await GetAsync(userName);
+        if (userInDb is null) return false;
+
+        var user = new User(userInDb.Id, userInDb.UserName, userToUpdate.FirstName,
+            userToUpdate.LastName, userToUpdate.DateOfBirth, userInDb.Password, userToUpdate.Avatar);
+        
+        return await _userRepository.UpdateUser(userName, user);
     }
 
     public async Task RemoveAsync(string userName)

@@ -35,6 +35,16 @@ public class UserController : ControllerBase
 
         return users;
     }
+    
+    [HttpGet]
+    [Route("/api/[controller]/Validate/{userName}")]
+
+    public async Task<bool> ValidateUserName(string userName)
+    {
+        var user = await _userService.GetAsync(userName);
+
+        return user is null;
+    }
 
     [HttpPost("Login")]
     public async Task<ActionResult<User?>> Login(UserDto userDto)
@@ -42,7 +52,7 @@ public class UserController : ControllerBase
         var user = await _userService.AuthAndGetUser(userDto);
         return user;
     }
-    
+
     [HttpPost("Logout")]
     public async Task<bool> Logout(LogoutUserDto logoutUser)
     {
@@ -65,15 +75,15 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(string userName, User user)
+    public async Task<IActionResult> Update(string userName, UpdateUserDto user)
     {
-        var userInDb = await _userService.GetAsync(userName);
-        if (userInDb is null) return NotFound();
+        var result = await _userService.UpdateOneAsync(userName, user);
+        if (!result)
+        {
+            return NotFound();
+        }
 
-        user.Id = userInDb.Id;
-        await _userService.UpdateOneAsync(userName, user);
-
-        return CreatedAtAction(nameof(Get), new { userName = user.UserName }, user);
+        return CreatedAtAction(nameof(Get), new { userName = userName }, user);
     }
 
     [HttpDelete]

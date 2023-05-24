@@ -18,6 +18,12 @@
     flex: 1;
 }
 
+.left-panel-header .full-name:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+    cursor: pointer;
+}
+
 .left-panel-header .logout-btn {
     color: #1877f2;
     font-size: 25px;

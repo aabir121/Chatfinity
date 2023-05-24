@@ -19,5 +19,9 @@ export const UserDataService = {
 
     validateUserName: (userName) => {
         return ApiService.getData("/User/Validate/" + userName);
+    },
+
+    updateUser: (userName, userDataToUpdate) => {
+        return ApiService.updateData("/User?userName=" + userName, userDataToUpdate);
     }
 };

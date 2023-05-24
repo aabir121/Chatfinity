@@ -4,9 +4,9 @@ import {useDispatch} from "react-redux";
 import {logoutCurrentUser} from "../../actions/userListActions";
 import {UserDataService} from "../../services/UserDataService";
 import {FaTimes} from "react-icons/fa";
-import Base64Image from "../Common/Base64Image";
 import React from "react";
 import UserAvatar from "../Common/UserAvatar";
+import {showUserProfileModal} from "../../actions/userProfileModalActions";
 
 function ChatLeftPanelHeader({user, toggleCollapse}) {
     const dispatch = useDispatch();
@@ -19,11 +19,15 @@ function ChatLeftPanelHeader({user, toggleCollapse}) {
             });
     };
 
+    const onUserNameClick = () => {
+      dispatch(showUserProfileModal());
+    };
+
     return (
         <div className="left-panel-header">
             <UserAvatar avatarStr={user.avatar}/>
             <div className="user-info">
-                <div className="full-name">{fullName}</div>
+                <div className="full-name" onClick={onUserNameClick}>{fullName}</div>
                 {user && user.userName && <FiLogOut title="Logout" className="logout-btn" onClick={logout}></FiLogOut>}
                 <div className="close-icon" onClick={toggleCollapse}><FaTimes/></div>
             </div>

@@ -6,6 +6,7 @@ import ToastMessage from "./components/Common/ToastMessage";
 import {Spinner} from "./components/Common/Spinner";
 import {useSelector} from "react-redux";
 import ConfirmationModal from "./components/Common/ConfirmationDialog";
+import UserProfileModal from "./components/Modal/UserProfileModal";
 function App() {
     const showLoader = useSelector((state) => state.loader.showLoader);
 
@@ -13,6 +14,7 @@ function App() {
     <div className="App">
         {showLoader && <Spinner></Spinner>}
         <ConfirmationModal />
+        <UserProfileModal/>
         <ToastMessage></ToastMessage>
         <ChatWindow></ChatWindow>
     </div>

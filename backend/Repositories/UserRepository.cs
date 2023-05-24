@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using backend.DTOs;
 using backend.ErrorManagement.Exceptions;
 using backend.Models;
 using MongoDB.Driver;
@@ -24,9 +25,10 @@ public class UserRepository : RepositoryBase<User>, IUserRepository
         await Collection.InsertOneAsync(user);
     }
 
-    public async Task UpdateUser(string userName, User user)
+    public async Task<bool> UpdateUser(string userName, User user)
     {
-        await Collection.ReplaceOneAsync(x => x.UserName == userName, user);
+        var result = await Collection.ReplaceOneAsync(x => x.UserName == userName, user);
+        return result.IsAcknowledged;
     }
 
     public async Task DeleteUser(string userName)
